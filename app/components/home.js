@@ -63,7 +63,7 @@ class Home extends Component {
             return (
                 <View style={styles.container}>
 
-                  <TouchableHighlight onPress={() => Actions.card_list({title:"Wallet"})} underlayColor='rgba(0,0,0,.2)'>
+                  <TouchableHighlight onPress={() => Actions.card_list({title:"Wallet", mode: true})} underlayColor='rgba(0,0,0,.2)'>
                       <View style={styles.row}>
                           <Text style={styles.author}>
                               Wallet
@@ -71,7 +71,7 @@ class Home extends Component {
                       </View>
                   </TouchableHighlight>
 
-                  <TouchableHighlight onPress={() => Actions.card_list({title:"Rolodex"})} underlayColor='rgba(0,0,0,.2)'>
+                  <TouchableHighlight onPress={() => Actions.card_list({title:"Rolodex", mode: false})} underlayColor='rgba(0,0,0,.2)'>
                       <View style={styles.row}>
                           <Text style={styles.author}>
                               Rolodex

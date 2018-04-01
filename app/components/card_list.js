@@ -29,7 +29,6 @@ class CardList extends Component {
         super(props);
 
         this.state = {};
-
         this.renderItem = this.renderItem.bind(this);
         this.showOptions = this.showOptions.bind(this);
     }
@@ -83,6 +82,8 @@ class CardList extends Component {
   }
 
   renderItem({item, index}) {
+    console.log(item.owner)
+    if (item.owner == this.props.mode){
       return (
           <TouchableHighlight onPress={() => this.showOptions(item)} underlayColor='rgba(0,0,0,.2)'>
               <View style={styles.row}>
@@ -104,6 +105,7 @@ class CardList extends Component {
               </View>
           </TouchableHighlight>
       )
+}
   }
 };
 
