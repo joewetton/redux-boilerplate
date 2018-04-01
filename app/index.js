@@ -30,7 +30,7 @@ class Main extends Component {
         return (
             <Router>
                 <Scene key="root">
-                    <Scene key="home" component={Home} title="Home" initial/>
+                    <Scene key="home" component={Home} title="ID.ly" initial/>
                     <Scene key="new_quote" component={NewQuote} title="New Quote"/>
                 </Scene>
             </Router>

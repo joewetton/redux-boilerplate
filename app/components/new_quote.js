@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { addQuote, updateQuote, clearQuote } from '../actions'
 import { Actions } from 'react-native-router-flux';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
+//import {RSAKeychain, RSA} from 'react-native-rsa-native';
 
 const {width: windowWidth, height: windowHeight} = Dimensions.get('window');
 
@@ -20,6 +21,7 @@ class NewQuote extends Component {
 
         this.generateID = this.generateID.bind(this);
         this.addQuote = this.addQuote.bind(this);
+        this.generateKeys = this.generateKeys.bind(this)
     }
 
     generateID() {
@@ -29,8 +31,29 @@ class NewQuote extends Component {
             d = Math.floor(d / 16);
             return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(5);
         });
-        
         return id;
+    }
+
+    generateKeys() {
+      console.log('RSA public private keys!')
+      var RSAKey = require('react-native-rsa');
+      const bits = 1024;
+      const exponent = '10001'; // must be a string. This is hex string. decimal = 65537
+      var rsa = new RSAKey();
+      rsa.generate(bits, exponent);
+      var publicKey = rsa.getPublicString(); // return json encoded string
+      var privateKey = rsa.getPrivateString(); // return json encoded string
+      console.log(publicKey)
+      console.log(privateKey)
+
+      rsa.setPublicString(publicKey);
+      var originText = 'sample String Value';
+      console.log(originText)
+      var encrypted = rsa.encrypt(originText);
+      console.log(encrypted)
+      var decrypted = rsa.decrypt(encrypted); // decrypted == originText
+      console.log(decrypted)
+      return privateKey;
     }
 
     addQuote() {
@@ -41,7 +64,8 @@ class NewQuote extends Component {
             this.props.updateQuote(quote);
         }else{
             let id = this.generateID();
-            let quote = {"id": id, "author": this.state.author, "quote": this.state.quote};
+            let keys = this.generateKeys();
+            let quote = {"id": id, "keys": keys, "author": this.state.author, "quote": this.state.quote};
             this.props.addQuote(quote);
         }
 

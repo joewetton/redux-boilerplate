@@ -46,13 +46,13 @@ class Home extends Component {
             },
             (buttonIndex) => {
                 if (buttonIndex === 0) Actions.new_quote({quote: quote, edit: true, title:"Edit Quote"})
-                else if (buttonIndex === 1) this.props.deleteQuote()
+                else if (buttonIndex === 1) this.props.deleteQuote(quote.id)
                 else if (buttonIndex === 2) this.props.clearQuote()
             });
     }
 
     render() {
-        
+
         if (this.props.loading) {
             return (
                 <View style={styles.activityIndicatorContainer}>
