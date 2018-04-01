@@ -5,7 +5,7 @@ import { Router, Scene } from 'react-native-router-flux';
 
 import Home from './components/home'
 import NewQuote from './components/new_quote'
-
+import CardList from './components/card_list'
 import Data from './quotes.json'
 
 import {connect} from 'react-redux';
@@ -32,6 +32,7 @@ class Main extends Component {
                 <Scene key="root">
                     <Scene key="home" component={Home} title="ID.ly" initial/>
                     <Scene key="new_quote" component={NewQuote} title="New Quote"/>
+                    <Scene key="card_list" component={CardList} title="Card List"/>
                 </Scene>
             </Router>
         );

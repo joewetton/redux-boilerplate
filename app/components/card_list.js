@@ -24,7 +24,7 @@ const BUTTONS = [
 
 const CANCEL_INDEX = 3;
 
-class Home extends Component {
+class CardList extends Component {
     constructor(props) {
         super(props);
 
@@ -59,42 +59,10 @@ class Home extends Component {
                     <ActivityIndicator animating={true}/>
                 </View>
             );
+
         } else {
             return (
                 <View style={styles.container}>
-
-                  <TouchableHighlight onPress={() => Actions.card_list({title:"Wallet"})} underlayColor='rgba(0,0,0,.2)'>
-                      <View style={styles.row}>
-                          <Text style={styles.author}>
-                              Wallet
-                          </Text>
-                      </View>
-                  </TouchableHighlight>
-
-                  <TouchableHighlight onPress={() => Actions.card_list({title:"Rolodex"})} underlayColor='rgba(0,0,0,.2)'>
-                      <View style={styles.row}>
-                          <Text style={styles.author}>
-                              Rolodex
-                          </Text>
-                      </View>
-                  </TouchableHighlight>
-
-                  <TouchableHighlight onPress={() => Actions.card_list()} underlayColor='rgba(0,0,0,.2)'>
-                      <View style={styles.row}>
-                          <Text style={styles.author}>
-                              Inbox
-                          </Text>
-                      </View>
-                  </TouchableHighlight>
-
-                  <TouchableHighlight onPress={() => Actions.card_list()} underlayColor='rgba(0,0,0,.2)'>
-                      <View style={styles.row}>
-                          <Text style={styles.author}>
-                              About
-                          </Text>
-                      </View>
-                  </TouchableHighlight>
-
                     <FlatList
                         ref='listRef'
                         data={this.props.quotes}
@@ -102,19 +70,17 @@ class Home extends Component {
                         keyExtractor={(item, index) => index}/>
 
 
+
                     <TouchableHighlight style={styles.addButton}
                                         underlayColor='#ff7043' onPress={() => Actions.new_quote()}>
-                        <Text style={{fontSize: 25, color: 'white'}}>Add</Text>
+                        <Text style={{fontSize: 25, color: 'white'}}>+</Text>
                     </TouchableHighlight>
 
-                    <TouchableHighlight style={styles.listButton}
-                                        underlayColor='#ff7043' onPress={() => Actions.card_list()}>
-                        <Text style={{fontSize: 25, color: 'white'}}>List</Text>
-                    </TouchableHighlight>
                 </View>
             );
-        }
+
     }
+  }
 
     renderItem({item, index}) {
         return (
@@ -155,7 +121,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 //Connect everything
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(CardList);
 
 const styles = StyleSheet.create({
 
@@ -206,27 +172,6 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 20,
         right: 20,
-        shadowColor: "#000000",
-        shadowOpacity: 0.8,
-        shadowRadius: 2,
-        shadowOffset: {
-            height: 1,
-            width: 0
-        }
-    },
-
-    listButton: {
-        backgroundColor: '#cccccc',
-        borderColor: '#ff5722',
-        borderWidth: 1,
-        height: 50,
-        width: 50,
-        borderRadius: 50 / 2,
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'absolute',
-        bottom: 20,
-        right: 80,
         shadowColor: "#000000",
         shadowOpacity: 0.8,
         shadowRadius: 2,
