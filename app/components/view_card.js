@@ -123,12 +123,6 @@ class ViewCard extends Component {
                     <Text style={styles.owner}>
                         {item.owner.toString()}
                     </Text>
-
-                    <QRCode
-                      value={item.keys.n}
-                      size={350}
-                      bgColor='black'
-                      fgColor='white'/>
                 </View>
             </TouchableHighlight>
 
@@ -163,12 +157,6 @@ class ViewCard extends Component {
                   <Text style={styles.owner}>
                       {item.owner.toString()}
                   </Text>
-
-                  <QRCode
-                    value={item.keys.n}
-                    size={300}
-                    bgColor='purple'
-                    fgColor='white'/>
               </View>
           </TouchableHighlight>
 
