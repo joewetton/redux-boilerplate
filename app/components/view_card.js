@@ -105,9 +105,9 @@ class ViewCard extends Component {
       if (item.owner == true) {
               console.log('Viewing your card (can edit)')
         return (
-          <View style={styles.container}>
+          <View style={{flex: 1, backgroundColor: '#fff'}}>
               <TouchableHighlight onPress={() => this.showOptions(item)} underlayColor='rgba(0,0,0,.2)'>
-                <View style={styles.row}>
+                <View style={{flex:1, paddingLeft:10, paddingRight:10}}>
                     <Text style={styles.quote}>
                         {item.quote}
                     </Text>
@@ -145,9 +145,9 @@ class ViewCard extends Component {
     } else {
                     console.log('Viewing someone elses card (cannot edit)')
       return (
-        <View style={styles.container}>
+        <View style={{flex: 1, backgroundColor: '#fff'}}>
             <TouchableHighlight underlayColor='rgba(0,0,0,.2)'>
-              <View style={styles.row}>
+              <View style={{flex: 1, backgroundColor: '#fff'}}>
                   <Text style={styles.quote}>
                       {item.quote}
                   </Text>
