@@ -134,7 +134,7 @@ class ViewCard extends Component {
 
 
             <TouchableOpacity style={styles.saveBtn}
-                              onPress={() => Actions.share()}>
+                              onPress={() => Actions.share({card: item})}>
                 <Text style={styles.buttonText}>
                     Share QR
                 </Text>
@@ -173,7 +173,7 @@ class ViewCard extends Component {
           </TouchableHighlight>
 
           <TouchableOpacity style={[styles.saveBtn]}
-                            onPress={() => Actions.share()}>
+                            onPress={() => Actions.share({card: item})}>
               <Text style={styles.buttonText}>
                   Share QR
               </Text>

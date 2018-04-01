@@ -21,23 +21,16 @@ import {Actions} from 'react-native-router-flux'
 class Share extends Component {
   constructor(props) {
       super(props);
-    this.state = {
-      text: 'http://facebook.github.io/react-native/',
-    };
+    this.state = {};
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <TextInput
-          style={styles.input}
-          onChangeText={(text) => this.setState({text: text})}
-          value={this.state.text}
-        />
         <QRCode
-          value={this.state.text}
-          size={300}
-          bgColor='purple'
+          value={this.props.card.keys.n}
+          size={350}
+          bgColor='black'
           fgColor='white'/>
       </View>
     );
