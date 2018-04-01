@@ -68,7 +68,7 @@ class NewQuote extends Component {
             let id = this.generateID();
             let keys = this.generateKeys();
             let keys_json = JSON.parse(keys);
-            let quote = {"id": id, "keys": keys_json, "author": this.state.author, "quote": this.state.quote, "email": this.state.email};
+            let quote = {"id": id, "keys": keys_json, "author": this.state.author, "quote": this.state.quote, "email": this.state.email, "owner": true};
             console.log(quote.keys.n)
             console.log(quote.keys)
             this.props.addQuote(quote);

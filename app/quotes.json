@@ -15,7 +15,8 @@
       },
       "author": "Vivian Greene",
       "quote": "Life isn't about waiting for the storm to pass. It's about learning how to dance in the rain.",
-      "email": "joe.wetton@gmail.com"
+      "email": "joe.wetton@gmail.com",
+      "owner": true
     },
     {
       "id":2,
@@ -32,7 +33,8 @@
       },
       "author": "Maya Angelou",
       "quote": "Still, like air, I rise.",
-      "email": "wetton@pdx.edu"
+      "email": "wetton@pdx.edu",
+      "owner": false
     },
     {
       "id":3,
@@ -49,7 +51,8 @@
       },
       "author": "Confucius",
       "quote": "Our greatest glory is not in never falling, but in rising every time we fall.",
-      "email": "joe.wetton@me.com"
+      "email": "joe.wetton@me.com",
+      "owner": false
     }
   ]
 }

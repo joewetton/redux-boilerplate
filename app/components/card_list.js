@@ -95,8 +95,11 @@ class CardList extends Component {
                   <Text style={styles.keys}>
                       {item.keys.n}
                   </Text>
-                  <Text style={styles.keys}>
+                  <Text style={styles.email}>
                       {item.email}
+                  </Text>
+                  <Text style={styles.owner}>
+                      {item.owner.toString()}
                   </Text>
               </View>
           </TouchableHighlight>
@@ -159,6 +162,12 @@ const styles = StyleSheet.create({
     },
 
     email: {
+        fontSize: 10,
+        fontWeight: "600",
+        marginTop: 8 * 2
+    },
+
+    owner: {
         fontSize: 10,
         fontWeight: "600",
         marginTop: 8 * 2
