@@ -16,7 +16,8 @@ class NewQuote extends Component {
 
         this.state = {
             author: (props.edit) ? props.quote.author : "",
-            quote: (props.edit) ? props.quote.quote : ""
+            quote: (props.edit) ? props.quote.quote : "",
+            email: (props.edit) ? props.quote.email : ""
         };
 
         this.generateID = this.generateID.bind(this);
@@ -61,12 +62,13 @@ class NewQuote extends Component {
             let quote = this.props.quote;
             quote['author'] = this.state.author;
             quote['quote'] = this.state.quote;
+            quote['email'] = this.state.email;
             this.props.updateQuote(quote);
         }else{
             let id = this.generateID();
             let keys = this.generateKeys();
             let keys_json = JSON.parse(keys);
-            let quote = {"id": id, "keys": keys_json, "author": this.state.author, "quote": this.state.quote};
+            let quote = {"id": id, "keys": keys_json, "author": this.state.author, "quote": this.state.quote, "email": this.state.email};
             console.log(quote.keys.n)
             console.log(quote.keys)
             this.props.addQuote(quote);
@@ -88,6 +90,13 @@ class NewQuote extends Component {
                     />
                     <TextInput
                         multiline={true}
+                        onChangeText={(text) => this.setState({email: text})}
+                        placeholder={"Email"}
+                        style={[styles.email]}
+                        value={this.state.email}
+                    />
+                    <TextInput
+                        multiline={true}
                         onChangeText={(text) => this.setState({quote: text})}
                         placeholder={"Enter Quote"}
                         style={[styles.quote]}
@@ -95,11 +104,11 @@ class NewQuote extends Component {
                     />
                 </View>
                 <TouchableOpacity style={[styles.saveBtn]}
-                                  disabled={(this.state.author.length > 0 && this.state.quote.length > 0) ? false : true}
+                                  disabled={(this.state.author.length > 0 && this.state.quote.length > 0 && this.state.email.length > 0) ? false : true}
                                   onPress={this.addQuote}>
                     <Text style={[styles.buttonText,
                         {
-                            color: (this.state.author.length > 0 && this.state.quote.length > 0) ? "#FFF" : "rgba(255,255,255,.5)"
+                            color: (this.state.author.length > 0 && this.state.quote.length > 0 && this.state.email.length > 0) ? "#FFF" : "rgba(255,255,255,.5)"
                         }]}>
                         Save
                     </Text>
@@ -135,13 +144,23 @@ var styles = StyleSheet.create({
         padding: 16,
         paddingLeft:0,
         flex:1,
-        height: 200,
+        height: 150,
         marginBottom:50,
         borderTopWidth: 1,
         borderColor: "rgba(212,211,211, 0.3)",
     },
 
     title: {
+        fontWeight: "400",
+        lineHeight: 22,
+        fontSize: 16,
+        fontFamily: 'Helvetica Neue',
+        height:25+32,
+        padding: 16,
+        paddingLeft:0
+    },
+
+    email: {
         fontWeight: "400",
         lineHeight: 22,
         fontSize: 16,

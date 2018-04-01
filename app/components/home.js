@@ -129,6 +129,9 @@ class Home extends Component {
                     <Text style={styles.keys}>
                         {item.keys.n}
                     </Text>
+                    <Text style={styles.keys}>
+                        {item.email}
+                    </Text>
                 </View>
             </TouchableHighlight>
         )
@@ -184,6 +187,12 @@ const styles = StyleSheet.create({
     },
 
     keys: {
+        fontSize: 10,
+        fontWeight: "600",
+        marginTop: 8 * 2
+    },
+
+    email: {
         fontSize: 10,
         fontWeight: "600",
         marginTop: 8 * 2

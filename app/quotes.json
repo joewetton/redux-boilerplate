@@ -14,7 +14,8 @@
           "coeff":"7e5d91db332e963d331040891486f4e61f477fc39e1fe76ac30a6fd2fd2c408b4ce8fe459544e41a55f0bd8fb2b131932c706aa47694494591316c9448451de4"
       },
       "author": "Vivian Greene",
-      "quote": "Life isn't about waiting for the storm to pass. It's about learning how to dance in the rain."
+      "quote": "Life isn't about waiting for the storm to pass. It's about learning how to dance in the rain.",
+      "email": "joe.wetton@gmail.com"
     },
     {
       "id":2,
@@ -30,7 +31,8 @@
         "coeff":"9906b34214f5c635b064dda3f0f18d00918f32ad5f956ac4b6b3fa35efcd8bea58a04c14f2af3e0bb3e7405d0cf3468010e7423de6cc57fe84b8a6a7832549ca"
       },
       "author": "Maya Angelou",
-      "quote": "Still, like air, I rise."
+      "quote": "Still, like air, I rise.",
+      "email": "wetton@pdx.edu"
     },
     {
       "id":3,
@@ -46,7 +48,8 @@
         "coeff":"78a961beec99b21e2a94c1a77ebe9f8332675468abc031de244e60b437818c75f3adc27838de1fe888004bb7dfccf369f4f5705efa474b467fdf03142dd59e1d"
       },
       "author": "Confucius",
-      "quote": "Our greatest glory is not in never falling, but in rising every time we fall."
+      "quote": "Our greatest glory is not in never falling, but in rising every time we fall.",
+      "email": "joe.wetton@me.com"
     }
   ]
 }

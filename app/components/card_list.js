@@ -82,26 +82,26 @@ class CardList extends Component {
     }
   }
 
-    renderItem({item, index}) {
-        return (
-            <TouchableHighlight onPress={() => this.showOptions(item)} underlayColor='rgba(0,0,0,.2)'>
-                <View style={styles.row}>
-                    <Text style={styles.quote}>
-                        {item.quote}
-                    </Text>
-                    <Text style={styles.author}>
-                        {item.author}
-                    </Text>
-                    <Text style={styles.keys}>
-                        {item.keys}
-                    </Text>
-                    <Text style={styles.keys}>
-                        {item.keys.n}
-                    </Text>
-                </View>
-            </TouchableHighlight>
-        )
-    }
+  renderItem({item, index}) {
+      return (
+          <TouchableHighlight onPress={() => this.showOptions(item)} underlayColor='rgba(0,0,0,.2)'>
+              <View style={styles.row}>
+                  <Text style={styles.quote}>
+                      {item.quote}
+                  </Text>
+                  <Text style={styles.author}>
+                      {item.author}
+                  </Text>
+                  <Text style={styles.keys}>
+                      {item.keys.n}
+                  </Text>
+                  <Text style={styles.keys}>
+                      {item.email}
+                  </Text>
+              </View>
+          </TouchableHighlight>
+      )
+  }
 };
 
 
@@ -153,6 +153,12 @@ const styles = StyleSheet.create({
     },
 
     keys: {
+        fontSize: 10,
+        fontWeight: "600",
+        marginTop: 8 * 2
+    },
+
+    email: {
         fontSize: 10,
         fontWeight: "600",
         marginTop: 8 * 2
