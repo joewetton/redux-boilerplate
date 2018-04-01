@@ -98,7 +98,7 @@ class CardList extends Component {
     if (item.owner == this.props.mode){
       console.log('In Mode:', this.props.mode)
       return (
-          <TouchableHighlight onPress={() => this.showOptions(item)} underlayColor='rgba(0,0,0,.2)'>
+          <TouchableHighlight onPress={() => Actions.view_card({item: item})} underlayColor='rgba(0,0,0,.2)'>
               <View style={styles.row}>
                   <Text style={styles.quote}>
                       {item.quote}
