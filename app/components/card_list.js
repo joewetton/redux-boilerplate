@@ -53,13 +53,15 @@ class CardList extends Component {
     render() {
 
         if (this.props.loading) {
+          console.log('In Loading Mode')
             return (
                 <View style={styles.activityIndicatorContainer}>
                     <ActivityIndicator animating={true}/>
                 </View>
             );
 
-        } else {
+        } else if (this.props.mode == true) {
+                console.log('In Wallet Mode')
             return (
                 <View style={styles.container}>
                     <FlatList
@@ -67,7 +69,6 @@ class CardList extends Component {
                         data={this.props.quotes}
                         renderItem={this.renderItem}
                         keyExtractor={(item, index) => index}/>
-
 
 
                     <TouchableHighlight style={styles.addButton}
@@ -78,12 +79,24 @@ class CardList extends Component {
                 </View>
             );
 
+    } else {
+      console.log('In Rolodex Mode')
+          return (
+                <View style={styles.container}>
+                    <FlatList
+                        ref='listRef'
+                        data={this.props.quotes}
+                        renderItem={this.renderItem}
+                        keyExtractor={(item, index) => index}/>
+                </View>
+          );
     }
   }
 
   renderItem({item, index}) {
     console.log(item.owner)
     if (item.owner == this.props.mode){
+      console.log('In Mode:', this.props.mode)
       return (
           <TouchableHighlight onPress={() => this.showOptions(item)} underlayColor='rgba(0,0,0,.2)'>
               <View style={styles.row}>
