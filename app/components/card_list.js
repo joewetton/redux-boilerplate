@@ -95,6 +95,9 @@ class CardList extends Component {
                     <Text style={styles.keys}>
                         {item.keys}
                     </Text>
+                    <Text style={styles.keys}>
+                        {item.keys.n}
+                    </Text>
                 </View>
             </TouchableHighlight>
         )
