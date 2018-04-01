@@ -22,8 +22,11 @@ class Main extends Component {
             if (data === null){
                 AsyncStorage.setItem('data', JSON.stringify(Data.quotes));
                 _this.props.getQuotes();
+                console.log(JSON.stringify(Data.quotes));
+                console.log('gettingQuotes!')
             }
         });
+        console.log('out of componentDidMount!')
     }
 
     render() {

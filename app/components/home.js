@@ -127,7 +127,7 @@ class Home extends Component {
                         {item.author}
                     </Text>
                     <Text style={styles.keys}>
-                        {item.keys}
+                        {item.keys.n}
                     </Text>
                 </View>
             </TouchableHighlight>
