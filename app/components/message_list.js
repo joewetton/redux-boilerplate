@@ -24,18 +24,17 @@ const BUTTONS = [
 
 const CANCEL_INDEX = 3;
 
-class Home extends Component {
+class MessageList extends Component {
     constructor(props) {
         super(props);
 
         this.state = {};
-
         this.renderItem = this.renderItem.bind(this);
         this.showOptions = this.showOptions.bind(this);
     }
 
     componentDidMount() {
-        this.props.getCards(); //call our action
+        this.props.getMessages(); //call our action
     }
 
     showOptions(card) {
@@ -54,76 +53,75 @@ class Home extends Component {
     render() {
 
         if (this.props.loading) {
+          console.log('In Loading Mode')
             return (
                 <View style={styles.activityIndicatorContainer}>
                     <ActivityIndicator animating={true}/>
                 </View>
             );
-        } else {
+
+        } else if (this.props.mode == true) {
+                console.log('In Wallet Mode')
             return (
                 <View style={styles.container}>
+                    <FlatList
+                        ref='listRef'
+                        data={this.props.cards}
+                        renderItem={this.renderItem}
+                        keyExtractor={(item, index) => index}/>
 
-                  <TouchableHighlight onPress={() => Actions.card_list({title:"Wallet", mode: true})} underlayColor='rgba(0,0,0,.2)'>
-                      <View style={styles.row}>
-                          <Text style={styles.author}>
-                              Wallet
-                          </Text>
-                      </View>
-                  </TouchableHighlight>
 
-                  <TouchableHighlight onPress={() => Actions.card_list({title:"Rolodex", mode: false})} underlayColor='rgba(0,0,0,.2)'>
-                      <View style={styles.row}>
-                          <Text style={styles.author}>
-                              Rolodex
-                          </Text>
-                      </View>
-                  </TouchableHighlight>
+                    <TouchableHighlight style={styles.addButton}
+                                        underlayColor='#ff7043' onPress={() => Actions.new_card()}>
+                        <Text style={{fontSize: 25, color: 'white'}}>+</Text>
+                    </TouchableHighlight>
 
-                  <TouchableHighlight onPress={() => Actions.message_list()} underlayColor='rgba(0,0,0,.2)'>
-                      <View style={styles.row}>
-                          <Text style={styles.author}>
-                              Inbox
-                          </Text>
-                      </View>
-                  </TouchableHighlight>
-
-                  <TouchableHighlight onPress={() => Actions.new_message()} underlayColor='rgba(0,0,0,.2)'>
-                      <View style={styles.row}>
-                          <Text style={styles.author}>
-                              New Message
-                          </Text>
-                      </View>
-                  </TouchableHighlight>
-
-                  <TouchableHighlight onPress={() => Actions.scan()} underlayColor='rgba(0,0,0,.2)'>
-                      <View style={styles.row}>
-                          <Text style={styles.author}>
-                              Scan
-                          </Text>
-                      </View>
-                  </TouchableHighlight>
                 </View>
             );
-        }
-    }
 
-    renderItem({item, index}) {
-        return (
-            <TouchableHighlight onPress={() => this.showOptions(item)} underlayColor='rgba(0,0,0,.2)'>
-                <View style={styles.row}>
-                    <Text style={styles.quote}>
-                        {item.quote}
-                    </Text>
-                    <Text style={styles.keys}>
-                        {item.keys.n}
-                    </Text>
-                    <Text style={styles.owner}>
-                        {item.owner.toString()}
-                    </Text>
+    } else {
+      console.log('In Rolodex Mode')
+          return (
+                <View style={styles.container}>
+                    <FlatList
+                        ref='listRef'
+                        data={this.props.messages}
+                        renderItem={this.renderItem}
+                        keyExtractor={(item, index) => index}/>
                 </View>
-            </TouchableHighlight>
-        )
+          );
     }
+  }
+
+  renderItem({item, index}) {
+    console.log(item.owner)
+    if (item.owner == this.props.mode){
+      console.log('In Mode:', this.props.mode)
+      return (
+          <TouchableHighlight onPress={() => Actions.view_card({item: item})} underlayColor='rgba(0,0,0,.2)'>
+              <View style={styles.row}>
+                  <Text style={styles.quote}>
+                      {item.to}
+                  </Text>
+                  <Text style={styles.author}>
+                      {item.from}
+                  </Text>
+                  <Text style={styles.keys}>
+                      {item.message}
+                  </Text>
+                  <Text style={styles.email}>
+                      {item.time}
+                  </Text>
+                  <Text style={styles.owner}>
+                      {item.read.toString()}
+                  </Text>
+              </View>
+          </TouchableHighlight>
+      )
+}
+  }
+
+
 };
 
 
@@ -134,7 +132,7 @@ class Home extends Component {
 function mapStateToProps(state, props) {
     return {
         loading: state.dataReducer.loading,
-        cards: state.dataReducer.cards
+        messages: state.dataReducer.messages
     }
 }
 
@@ -146,7 +144,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 //Connect everything
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(MessageList);
 
 const styles = StyleSheet.create({
 
@@ -209,27 +207,6 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 20,
         right: 20,
-        shadowColor: "#000000",
-        shadowOpacity: 0.8,
-        shadowRadius: 2,
-        shadowOffset: {
-            height: 1,
-            width: 0
-        }
-    },
-
-    listButton: {
-        backgroundColor: '#cccccc',
-        borderColor: '#ff5722',
-        borderWidth: 1,
-        height: 50,
-        width: 50,
-        borderRadius: 50 / 2,
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'absolute',
-        bottom: 20,
-        right: 80,
         shadowColor: "#000000",
         shadowOpacity: 0.8,
         shadowRadius: 2,

@@ -10,6 +10,7 @@ import Share from './components/share'
 import ViewCard from './components/view_card'
 import Scan from './components/scan'
 import NewMessage from './components/new_message'
+import MessageList from './components/message_list'
 
 import CardData from './cards.json'
 import MessageData from './messages.json'
@@ -57,6 +58,7 @@ class Main extends Component {
                     <Scene key="view_card" component={ViewCard} title="View Card"/>
                     <Scene key="scan" component={Scan} title="Scan"/>
                     <Scene key="new_message" component={NewMessage} title="New Message"/>
+                    <Scene key="message_list" component={MessageList} title="Message List"/>
                 </Scene>
             </Router>
         );
