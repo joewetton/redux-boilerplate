@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
+import QRCode from 'react-native-qrcode';
 import {
     StyleSheet,
     FlatList,
     View,
     Text,
-    ActivityIndicator, TouchableHighlight, ActionSheetIOS
+    Dimensions,
+    ActivityIndicator, TouchableHighlight, ActionSheetIOS, TouchableOpacity
 } from 'react-native';
 
 import {bindActionCreators} from 'redux';
@@ -13,6 +15,8 @@ import { connect } from 'react-redux';
 import * as ReduxActions from '../actions'; //Import your actions
 
 import {Actions} from 'react-native-router-flux'
+
+const {width: windowWidth, height: windowHeight} = Dimensions.get('window');
 
 //Buttons for Action Sheet
 const BUTTONS = [
@@ -24,12 +28,11 @@ const BUTTONS = [
 
 const CANCEL_INDEX = 3;
 
-class Home extends Component {
+class ViewCard extends Component {
     constructor(props) {
         super(props);
 
         this.state = {};
-
         this.renderItem = this.renderItem.bind(this);
         this.showOptions = this.showOptions.bind(this);
     }
@@ -54,55 +57,17 @@ class Home extends Component {
     render() {
 
         if (this.props.loading) {
+          console.log('In Loading Mode')
             return (
                 <View style={styles.activityIndicatorContainer}>
                     <ActivityIndicator animating={true}/>
                 </View>
             );
-        } else {
+
+        } else if (this.props.mode == true) {
+                console.log('In Wallet Mode')
             return (
                 <View style={styles.container}>
-
-                  <TouchableHighlight onPress={() => Actions.card_list({title:"Wallet", mode: true})} underlayColor='rgba(0,0,0,.2)'>
-                      <View style={styles.row}>
-                          <Text style={styles.author}>
-                              Wallet
-                          </Text>
-                      </View>
-                  </TouchableHighlight>
-
-                  <TouchableHighlight onPress={() => Actions.card_list({title:"Rolodex", mode: false})} underlayColor='rgba(0,0,0,.2)'>
-                      <View style={styles.row}>
-                          <Text style={styles.author}>
-                              Rolodex
-                          </Text>
-                      </View>
-                  </TouchableHighlight>
-
-                  <TouchableHighlight onPress={() => Actions.card_list()} underlayColor='rgba(0,0,0,.2)'>
-                      <View style={styles.row}>
-                          <Text style={styles.author}>
-                              Inbox
-                          </Text>
-                      </View>
-                  </TouchableHighlight>
-
-                  <TouchableHighlight onPress={() => Actions.card_list()} underlayColor='rgba(0,0,0,.2)'>
-                      <View style={styles.row}>
-                          <Text style={styles.author}>
-                              About
-                          </Text>
-                      </View>
-                  </TouchableHighlight>
-
-                  <TouchableHighlight onPress={() => Actions.scan()} underlayColor='rgba(0,0,0,.2)'>
-                      <View style={styles.row}>
-                          <Text style={styles.author}>
-                              Scan
-                          </Text>
-                      </View>
-                  </TouchableHighlight>
-
                     <FlatList
                         ref='listRef'
                         data={this.props.quotes}
@@ -112,22 +77,37 @@ class Home extends Component {
 
                     <TouchableHighlight style={styles.addButton}
                                         underlayColor='#ff7043' onPress={() => Actions.new_quote()}>
-                        <Text style={{fontSize: 25, color: 'white'}}>Add</Text>
+                        <Text style={{fontSize: 25, color: 'white'}}>+</Text>
                     </TouchableHighlight>
 
-                    <TouchableHighlight style={styles.listButton}
-                                        underlayColor='#ff7043' onPress={() => Actions.card_list()}>
-                        <Text style={{fontSize: 25, color: 'white'}}>List</Text>
-                    </TouchableHighlight>
                 </View>
             );
-        }
-    }
 
-    renderItem({item, index}) {
+    } else {
+      console.log('In Rolodex Mode')
+          return (
+                <View style={styles.container}>
+                    <FlatList
+                        ref='listRef'
+                        data={this.props.quotes}
+                        renderItem={this.renderItem}
+                        keyExtractor={(item, index) => index}/>
+                </View>
+          );
+    }
+  }
+
+  renderItem({item, index}) {
+    console.log(item.id)
+    if (item.id == this.props.item.id){
+      console.log('Viewing ID:', this.props.id)
+
+      if (item.owner == true) {
+              console.log('Viewing your card (can edit)')
         return (
-            <TouchableHighlight onPress={() => this.showOptions(item)} underlayColor='rgba(0,0,0,.2)'>
-                <View style={styles.row}>
+          <View style={{flex: 1, backgroundColor: '#fff'}}>
+              <TouchableHighlight onPress={() => this.showOptions(item)} underlayColor='rgba(0,0,0,.2)'>
+                <View style={{flex:1, paddingLeft:10, paddingRight:10}}>
                     <Text style={styles.quote}>
                         {item.quote}
                     </Text>
@@ -137,13 +117,64 @@ class Home extends Component {
                     <Text style={styles.keys}>
                         {item.keys.n}
                     </Text>
+                    <Text style={styles.email}>
+                        {item.email}
+                    </Text>
                     <Text style={styles.owner}>
                         {item.owner.toString()}
                     </Text>
                 </View>
             </TouchableHighlight>
+
+
+            <TouchableOpacity style={styles.saveBtn}
+                              onPress={() => Actions.share({card: item})}>
+                <Text style={styles.buttonText}>
+                    Share QR
+                </Text>
+
+            </TouchableOpacity>
+            </View>
         )
+    } else {
+                    console.log('Viewing someone elses card (cannot edit)')
+      return (
+        <View style={{flex: 1, backgroundColor: '#fff'}}>
+            <TouchableHighlight underlayColor='rgba(0,0,0,.2)'>
+              <View style={{flex: 1, backgroundColor: '#fff'}}>
+                  <Text style={styles.quote}>
+                      {item.quote}
+                  </Text>
+                  <Text style={styles.author}>
+                      {item.author}
+                  </Text>
+                  <Text style={styles.keys}>
+                      {item.keys.n}
+                  </Text>
+                  <Text style={styles.email}>
+                      {item.email}
+                  </Text>
+                  <Text style={styles.owner}>
+                      {item.owner.toString()}
+                  </Text>
+              </View>
+          </TouchableHighlight>
+
+          <TouchableOpacity style={[styles.saveBtn]}
+                            onPress={() => Actions.share({card: item})}>
+              <Text style={styles.buttonText}>
+                  Share QR
+              </Text>
+          </TouchableOpacity>
+        </View>
+      )
     }
+
+
+
+
+}
+  }
 };
 
 
@@ -166,13 +197,25 @@ function mapDispatchToProps(dispatch) {
 }
 
 //Connect everything
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(ViewCard);
 
 const styles = StyleSheet.create({
 
     container:{
         flex:1,
         backgroundColor: '#F5F5F5'
+    },
+
+    saveBtn:{
+        width: windowWidth,
+        height: 44,
+        justifyContent: "center",
+        alignItems: 'center',
+        backgroundColor:"#6B9EFA"
+    },
+
+    buttonText:{
+        fontWeight: "500",
     },
 
     activityIndicatorContainer:{
@@ -229,27 +272,6 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 20,
         right: 20,
-        shadowColor: "#000000",
-        shadowOpacity: 0.8,
-        shadowRadius: 2,
-        shadowOffset: {
-            height: 1,
-            width: 0
-        }
-    },
-
-    listButton: {
-        backgroundColor: '#cccccc',
-        borderColor: '#ff5722',
-        borderWidth: 1,
-        height: 50,
-        width: 50,
-        borderRadius: 50 / 2,
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'absolute',
-        bottom: 20,
-        right: 80,
         shadowColor: "#000000",
         shadowOpacity: 0.8,
         shadowRadius: 2,

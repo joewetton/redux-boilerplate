@@ -43,6 +43,7 @@ export function updateQuote(quote){
                 if (index !== -1) {
                     quotes[index]['author'] = quote.author;
                     quotes[index]['quote'] = quote.quote;
+                    quotes[index]['email'] = quote.email;
                 }
                 AsyncStorage.setItem('data', JSON.stringify(quotes), () => {
                     dispatch({type: UPDATE_QUOTE, quote:quote});

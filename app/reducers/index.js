@@ -26,6 +26,7 @@ const dataReducer = (state = dataState, action) => {
             if (index !== -1) {
                 quotes[index]['author'] = quote.author;
                 quotes[index]['text'] = quote.text;
+                quotes[index]['email'] = quote.email;
             }
             state = Object.assign({}, state, { quotes: quotes});
             return state;
@@ -38,7 +39,7 @@ const dataReducer = (state = dataState, action) => {
             state = Object.assign({}, state, { quotes: quotes});
             return state;
         }
-            
+
         case CLEAR_QUOTE:{
             state = Object.assign({}, state, dataState);
             return state;
