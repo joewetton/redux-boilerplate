@@ -121,7 +121,7 @@ class NewMessage extends Component {
 }
 
 //Connect everything
-export default connect(null, {addCard, updateCard})(NewCard);
+export default connect(null, {addCard, updateCard})(NewMessage);
 
 var styles = StyleSheet.create({
     saveBtn:{
