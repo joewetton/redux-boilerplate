@@ -105,12 +105,14 @@ class NewMessage extends Component {
           <Option value={card.keys.n}>{card.author}</Option>
         )
       })
+      from.unshift(<Option value={0}>Sender</Option>)
 
       const to = this.props.cards.filter(function(obj) {return obj.owner == true}).map(card => {
         return (
           <Option value={card.keys.n}>{card.author}</Option>
         )
       })
+      to.unshift(<Option value={0}>Receiver</Option>)
         //var array = this.props.cards
         console.log('cards')
         console.log(this.props.cards)
