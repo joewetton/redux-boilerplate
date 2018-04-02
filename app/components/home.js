@@ -87,10 +87,10 @@ class Home extends Component {
                       </View>
                   </TouchableHighlight>
 
-                  <TouchableHighlight onPress={() => Actions.card_list()} underlayColor='rgba(0,0,0,.2)'>
+                  <TouchableHighlight onPress={() => Actions.new_message()} underlayColor='rgba(0,0,0,.2)'>
                       <View style={styles.row}>
                           <Text style={styles.author}>
-                              About
+                              New Message
                           </Text>
                       </View>
                   </TouchableHighlight>

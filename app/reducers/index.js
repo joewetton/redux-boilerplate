@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 
-import { CARDS_AVAILABLE, ADD_CARD, UPDATE_CARD, DELETE_CARD, CLEAR_ALL, MESSAGES_AVAILABLE } from "../actions/" //Import the actions types constant we defined in our actions
+import { CARDS_AVAILABLE, ADD_CARD, ADD_MESSAGE, UPDATE_CARD, DELETE_CARD, CLEAR_ALL, MESSAGES_AVAILABLE } from "../actions/" //Import the actions types constant we defined in our actions
 
 let dataState = { cards: [], messages: [], loading:true };
 
@@ -12,6 +12,13 @@ const dataReducer = (state = dataState, action) => {
             let cards =  cloneObject(state.cards) //clone the current state
             cards.unshift(action.card); //add the new card to the top
             state = Object.assign({}, state, { cards: cards});
+            return state;
+        }
+
+        case ADD_MESSAGE:{
+            let messages =  cloneObject(state.messages) //clone the current state
+            messages.unshift(action.message); //add the new card to the top
+            state = Object.assign({}, state, { messages: messages});
             return state;
         }
 

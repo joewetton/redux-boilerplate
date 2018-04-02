@@ -1,11 +1,17 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, Dimensions, Text, TextInput, TouchableOpacity} from 'react-native';
 
-import { connect } from 'react-redux';
-import { addCard, updateCard, clearAll } from '../actions'
+
+import { addMessage } from '../actions'
 import { Actions } from 'react-native-router-flux';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
+import { Select, Option } from 'react-native-select-list';
 //import {RSAKeychain, RSA} from 'react-native-rsa-native';
+
+import {bindActionCreators} from 'redux';
+import { connect } from 'react-redux';
+
+import * as ReduxActions from '../actions'; //Import your actions
 
 const {width: windowWidth, height: windowHeight} = Dimensions.get('window');
 
@@ -13,17 +19,17 @@ class NewMessage extends Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
-            author: (props.edit) ? props.card.author : "",
-            quote: (props.edit) ? props.card.quote : "",
-            email: (props.edit) ? props.card.email : ""
+            to: "",
+            from: "",
+            message: ""
         };
 
         this.generateID = this.generateID.bind(this);
-        this.addCard = this.addCard.bind(this);
+        this.addMessage = this.addMessage.bind(this);
         this.generateKeys = this.generateKeys.bind(this)
     }
+
 
     generateID() {
         let d = new Date().getTime();
@@ -33,6 +39,12 @@ class NewMessage extends Component {
             return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(5);
         });
         return id;
+    }
+
+    generateTimestamp() {
+      var time = new Date().getTime()/1000
+      var time_round = parseInt(time)
+      return time_round
     }
 
     generateKeys() {
@@ -57,60 +69,85 @@ class NewMessage extends Component {
       return privateKey;
     }
 
-    addCard() {
-        if (this.props.edit){
-            let card = this.props.card;
-            card['author'] = this.state.author;
-            card['quote'] = this.state.quote;
-            card['email'] = this.state.email;
-            this.props.updateCard(card);
-        }else{
+    addMessage() {
             let id = this.generateID();
-            let keys = this.generateKeys();
-            let keys_json = JSON.parse(keys);
-            let card = {"id": id, "keys": keys_json, "author": this.state.author, "quote": this.state.quote, "email": this.state.email, "owner": true};
-            console.log(card.keys.n)
-            console.log(card.keys)
-            this.props.addCard(card);
-        }
+            let unix = this.generateTimestamp();
+            //let keys_json = JSON.parse(keys);
+            console.log(unix)
+            console.log(id)
+            console.log(this.state.to)
+            console.log(this.state.from)
+            console.log(this.state.message)
+            let message = {"id": id, "to": this.state.to, "from": this.state.from, "message": this.state.message, "time": unix, "read": false};
+            console.log(message.id)
+            console.log(message.to)
+            console.log(message.from)
+            console.log(message.message)
+            console.log(message.time)
+
+            this.props.addMessage(message);
 
         Actions.pop();
     }
 
     render() {
+      //console.log(this.props.cards)
+        //var arr = [[]];
+        //{this.props.cards.map(function(card, index){
+        //  arr[index]=[];
+        //  arr[index][0]=card.keys.n
+        //  arr[index][1]=card.author
+      //  })}
+      //console.log(arr)
+
+      const from = this.props.cards.filter(function(obj) {return obj.owner == false}).map(card => {
         return (
+          <Option value={card.keys.n}>{card.author}</Option>
+        )
+      })
+
+      const to = this.props.cards.filter(function(obj) {return obj.owner == true}).map(card => {
+        return (
+          <Option value={card.keys.n}>{card.author}</Option>
+        )
+      })
+        //var array = this.props.cards
+        console.log('cards')
+        console.log(this.props.cards)
+        console.log('messages')
+        console.log(this.props.messages)
+        return (
+
+
             <View style={{flex: 1, backgroundColor: '#fff'}}>
                 <View style={{flex:1, paddingLeft:10, paddingRight:10}}>
-                    <TextInput
-                        onChangeText={(text) => this.setState({author: text})}
-                        placeholder={"Author"}
-                        autoFocus={true}
-                        style={[styles.title]}
-                        value={this.state.author}
-                    />
-                    <TextInput
-                        multiline={true}
-                        onChangeText={(text) => this.setState({email: text})}
-                        placeholder={"Email"}
-                        style={[styles.email]}
-                        value={this.state.email}
-                    />
+
+
+                  <Select onSelect={text => this.setState({ to: text })}>
+                  {to}
+                  </Select>
+
+                  <Select onSelect={text => this.setState({ from: text })}>
+                  {from}
+                  </Select>
+
+
                     <TextInput
                         multiline={true}
-                        onChangeText={(text) => this.setState({quote: text})}
-                        placeholder={"Enter Quote"}
+                        onChangeText={(text) => this.setState({message: text})}
+                        placeholder={"Enter Message"}
                         style={[styles.quote]}
                         value={this.state.quote}
                     />
                 </View>
                 <TouchableOpacity style={[styles.saveBtn]}
-                                  disabled={(this.state.author.length > 0 && this.state.quote.length > 0 && this.state.email.length > 0) ? false : true}
-                                  onPress={this.addCard}>
+                                  disabled={(this.state.to != 0 && this.state.from != 0 && this.state.message.length > 0) ? false : true}
+                                  onPress={this.addMessage}>
                     <Text style={[styles.buttonText,
                         {
-                            color: (this.state.author.length > 0 && this.state.quote.length > 0 && this.state.email.length > 0) ? "#FFF" : "rgba(255,255,255,.5)"
+                            color: (this.state.to != 0 && this.state.from != 0 && this.state.message.length > 0) ? "#FFF" : "rgba(255,255,255,.5)"
                         }]}>
-                        Save
+                        Send
                     </Text>
                 </TouchableOpacity>
                 <KeyboardSpacer />
@@ -120,8 +157,29 @@ class NewMessage extends Component {
 
 }
 
+// The function takes data from the app current state,
+// and insert/links it into the props of our component.
+// This function makes Redux know that this component needs to be passed a piece of the state
+function mapStateToProps(state, props) {
+    return {
+        cards: state.dataReducer.cards,
+        messages: state.dataReducer.messages
+    }
+}
+
+// Doing this merges our actions into the component’s props,
+// while wrapping them in dispatch() so that they immediately dispatch an Action.
+// Just by doing this, we will have access to the actions defined in out actions file (action/home.js)
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators(ReduxActions, dispatch);
+}
+
 //Connect everything
-export default connect(null, {addCard, updateCard})(NewMessage);
+export default connect(mapStateToProps, mapDispatchToProps)(NewMessage);
+
+
+//Connect everything
+//export default connect(null, {addMessage})(NewMessage);
 
 var styles = StyleSheet.create({
     saveBtn:{
