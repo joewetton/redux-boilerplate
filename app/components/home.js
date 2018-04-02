@@ -102,23 +102,6 @@ class Home extends Component {
                           </Text>
                       </View>
                   </TouchableHighlight>
-
-                    <FlatList
-                        ref='listRef'
-                        data={this.props.cards}
-                        renderItem={this.renderItem}
-                        keyExtractor={(item, index) => index}/>
-
-
-                    <TouchableHighlight style={styles.addButton}
-                                        underlayColor='#ff7043' onPress={() => Actions.new_card()}>
-                        <Text style={{fontSize: 25, color: 'white'}}>Add</Text>
-                    </TouchableHighlight>
-
-                    <TouchableHighlight style={styles.listButton}
-                                        underlayColor='#ff7043' onPress={() => Actions.card_list()}>
-                        <Text style={{fontSize: 25, color: 'white'}}>List</Text>
-                    </TouchableHighlight>
                 </View>
             );
         }
