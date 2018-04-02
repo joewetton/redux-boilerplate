@@ -14,7 +14,7 @@ export function addCard(card){
             if (cards !== null){
                 cards = JSON.parse(cards);
                 cards.unshift(card); //add the new card to the top
-                AsyncStorage.setItem('data', JSON.stringify(cards), () => {
+                AsyncStorage.setItem('carddata', JSON.stringify(cards), () => {
                     dispatch({type: ADD_CARD, card:card});
                 });
             }
@@ -62,7 +62,7 @@ export function deleteCard(id){
 
                 var index = getIndex(cards, id); //find the index of the card with the id passed
                 if(index !== -1) cards.splice(index, 1);//if yes, undo, remove the card
-                AsyncStorage.setItem('data', JSON.stringify(cards), () => {
+                AsyncStorage.setItem('carddata', JSON.stringify(cards), () => {
                     dispatch({type: DELETE_CARD, id:id});
                 });
             }
