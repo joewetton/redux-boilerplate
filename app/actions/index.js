@@ -4,6 +4,8 @@ export const UPDATE_CARD = 'UPDATE_CARD';
 export const DELETE_CARD = 'DELETE_CARD';
 export const CLEAR_ALL = 'CLEAR_ALL';
 
+export const MESSAGES_AVAILABLE = 'MESSAGES_AVAILABLE';
+
 import {AsyncStorage} from "react-native";
 
 
@@ -28,6 +30,17 @@ export function getCards(){
         AsyncStorage.getItem('carddata', (err, cards) => {
             if (cards !== null){
                 dispatch({type: CARDS_AVAILABLE, cards:JSON.parse(cards)});
+            }
+        });
+    };
+}
+
+// Get Data - READ (R)
+export function getMessages(){
+    return (dispatch) => {
+        AsyncStorage.getItem('messagedata', (err, messages) => {
+            if (messages !== null){
+                dispatch({type: MESSAGES_AVAILABLE, messages:JSON.parse(messages)});
             }
         });
     };

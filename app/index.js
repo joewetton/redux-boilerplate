@@ -10,15 +10,16 @@ import Share from './components/share'
 import ViewCard from './components/view_card'
 import Scan from './components/scan'
 import CardData from './cards.json'
+import MessageData from './messages.json'
 
 import {connect} from 'react-redux';
-import { getCards } from './actions'
+import { getCards, getMessages } from './actions'
 
 class Main extends Component {
     componentDidMount() {
         console.log('here in componentDidMount!')
         var _this = this;
-        //Check if any data exist
+        //Check if any card data exists
         AsyncStorage.getItem('carddata', (err, carddata) => {
             //if it doesn't exist, extract from json file
             //save the initial data in Async
@@ -27,6 +28,17 @@ class Main extends Component {
                 _this.props.getCards();
                 console.log(JSON.stringify(CardData.cards));
                 console.log('getting cards!')
+            }
+        });
+        // check if any message data exists
+        AsyncStorage.getItem('messagedata', (err, messagedata) => {
+            //if it doesn't exist, extract from json file
+            //save the initial data in Async
+            if (messagedata === null){
+                AsyncStorage.setItem('messagedata', JSON.stringify(MessageData.messages));
+                _this.props.getMessages();
+                console.log(JSON.stringify(MessageData.messages));
+                console.log('getting messsages!')
             }
         });
         console.log('out of componentDidMount!')
@@ -49,4 +61,4 @@ class Main extends Component {
 }
 
 //Connect everything
-export default connect(null, { getCards })(Main);
+export default connect(null, { getCards, getMessages })(Main);

@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
 
-import { CARDS_AVAILABLE, ADD_CARD, UPDATE_CARD, DELETE_CARD, CLEAR_ALL } from "../actions/" //Import the actions types constant we defined in our actions
+import { CARDS_AVAILABLE, ADD_CARD, UPDATE_CARD, DELETE_CARD, CLEAR_ALL, MESSAGES_AVAILABLE } from "../actions/" //Import the actions types constant we defined in our actions
 
-let dataState = { cards: [], loading:true };
+let dataState = { cards: [], messages: [], loading:true };
 
-import Data from '../cards.json'
+//import Data from '../cards.json'
 
 const dataReducer = (state = dataState, action) => {
     switch (action.type) {
@@ -17,6 +17,10 @@ const dataReducer = (state = dataState, action) => {
 
         case CARDS_AVAILABLE:
             state = Object.assign({}, state, { cards: action.cards, loading:false });
+            return state;
+
+        case MESSAGES_AVAILABLE:
+            state = Object.assign({}, state, { messages: action.messages, loading:false });
             return state;
 
         case UPDATE_CARD:{
