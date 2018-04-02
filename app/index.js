@@ -8,6 +8,7 @@ import NewQuote from './components/new_quote'
 import CardList from './components/card_list'
 import Share from './components/share'
 import ViewCard from './components/view_card'
+import Scan from './components/scan'
 import Data from './quotes.json'
 
 import {connect} from 'react-redux';
@@ -40,6 +41,7 @@ class Main extends Component {
                     <Scene key="card_list" component={CardList} title="Card List"/>
                     <Scene key="share" component={Share} title="Share"/>
                     <Scene key="view_card" component={ViewCard} title="View Card"/>
+                    <Scene key="scan" component={Scan} title="Scan"/>
                 </Scene>
             </Router>
         );

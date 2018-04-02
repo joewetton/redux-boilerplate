@@ -95,10 +95,10 @@ class Home extends Component {
                       </View>
                   </TouchableHighlight>
 
-                  <TouchableHighlight onPress={() => Actions.share()} underlayColor='rgba(0,0,0,.2)'>
+                  <TouchableHighlight onPress={() => Actions.scan()} underlayColor='rgba(0,0,0,.2)'>
                       <View style={styles.row}>
                           <Text style={styles.author}>
-                              QR
+                              Scan
                           </Text>
                       </View>
                   </TouchableHighlight>
