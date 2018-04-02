@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
 function mapStateToProps(state, props) {
     return {
         loading: state.dataReducer.loading,
-        quotes: state.dataReducer.quotes
+        cards: state.dataReducer.cards
     }
 }
 

@@ -1,46 +1,46 @@
 import { combineReducers } from 'redux';
 
-import { QUOTES_AVAILABLE, ADD_QUOTE, UPDATE_QUOTE, DELETE_QUOTE, CLEAR_QUOTE } from "../actions/" //Import the actions types constant we defined in our actions
+import { CARDS_AVAILABLE, ADD_CARD, UPDATE_CARD, DELETE_CARD, CLEAR_ALL } from "../actions/" //Import the actions types constant we defined in our actions
 
-let dataState = { quotes: [], loading:true };
+let dataState = { cards: [], loading:true };
 
-import Data from '../quotes.json'
+import Data from '../cards.json'
 
 const dataReducer = (state = dataState, action) => {
     switch (action.type) {
-        case ADD_QUOTE:{
-            let quotes =  cloneObject(state.quotes) //clone the current state
-            quotes.unshift(action.quote); //add the new quote to the top
-            state = Object.assign({}, state, { quotes: quotes});
+        case ADD_CARD:{
+            let cards =  cloneObject(state.cards) //clone the current state
+            cards.unshift(action.card); //add the new card to the top
+            state = Object.assign({}, state, { cards: cards});
             return state;
         }
 
-        case QUOTES_AVAILABLE:
-            state = Object.assign({}, state, { quotes: action.quotes, loading:false });
+        case CARDS_AVAILABLE:
+            state = Object.assign({}, state, { cards: action.cards, loading:false });
             return state;
 
-        case UPDATE_QUOTE:{
-            let quote = action.quote;
-            let quotes =  cloneObject(state.quotes) //clone the current state
-            let index = getIndex(quotes, quote.id); //find the index of the quote with the quote id passed
+        case UPDATE_CARD:{
+            let card = action.card;
+            let cards =  cloneObject(state.cards) //clone the current state
+            let index = getIndex(cards, card.id); //find the index of the card with the card id passed
             if (index !== -1) {
-                quotes[index]['author'] = quote.author;
-                quotes[index]['text'] = quote.text;
-                quotes[index]['email'] = quote.email;
+                cards[index]['author'] = card.author;
+                cards[index]['text'] = card.text;
+                cards[index]['email'] = card.email;
             }
-            state = Object.assign({}, state, { quotes: quotes});
+            state = Object.assign({}, state, { cards: cards});
             return state;
         }
 
-        case DELETE_QUOTE:{
-            let quotes =  cloneObject(state.quotes) //clone the current state
-            let index = getIndex(quotes, action.id); //find the index of the quote with the id passed
-            if(index !== -1) quotes.splice(index, 1);//if yes, undo, remove the QUOTE
-            state = Object.assign({}, state, { quotes: quotes});
+        case DELETE_CARD:{
+            let cards =  cloneObject(state.cards) //clone the current state
+            let index = getIndex(cards, action.id); //find the index of the card with the id passed
+            if(index !== -1) cards.splice(index, 1);//if yes, undo, remove the CARD
+            state = Object.assign({}, state, { cards: cards});
             return state;
         }
 
-        case CLEAR_QUOTE:{
+        case CLEAR_ALL:{
             state = Object.assign({}, state, dataState);
             return state;
         }

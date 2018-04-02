@@ -34,19 +34,19 @@ class CardList extends Component {
     }
 
     componentDidMount() {
-        this.props.getQuotes(); //call our action
+        this.props.getCards(); //call our action
     }
 
-    showOptions(quote) {
+    showOptions(card) {
         ActionSheetIOS.showActionSheetWithOptions({
                 options: BUTTONS,
                 cancelButtonIndex: CANCEL_INDEX,
                 destructiveButtonIndex: 3,
             },
             (buttonIndex) => {
-                if (buttonIndex === 0) Actions.new_quote({quote: quote, edit: true, title:"Edit Quote"})
-                else if (buttonIndex === 1) this.props.deleteQuote(quote.id)
-                else if (buttonIndex === 2) this.props.clearQuote()
+                if (buttonIndex === 0) Actions.new_card({card: card, edit: true, title:"Edit Card"})
+                else if (buttonIndex === 1) this.props.deleteCard(card.id)
+                else if (buttonIndex === 2) this.props.clearAll()
             });
     }
 
@@ -66,13 +66,13 @@ class CardList extends Component {
                 <View style={styles.container}>
                     <FlatList
                         ref='listRef'
-                        data={this.props.quotes}
+                        data={this.props.cards}
                         renderItem={this.renderItem}
                         keyExtractor={(item, index) => index}/>
 
 
                     <TouchableHighlight style={styles.addButton}
-                                        underlayColor='#ff7043' onPress={() => Actions.new_quote()}>
+                                        underlayColor='#ff7043' onPress={() => Actions.new_card()}>
                         <Text style={{fontSize: 25, color: 'white'}}>+</Text>
                     </TouchableHighlight>
 
@@ -85,7 +85,7 @@ class CardList extends Component {
                 <View style={styles.container}>
                     <FlatList
                         ref='listRef'
-                        data={this.props.quotes}
+                        data={this.props.cards}
                         renderItem={this.renderItem}
                         keyExtractor={(item, index) => index}/>
                 </View>
@@ -130,7 +130,7 @@ class CardList extends Component {
 function mapStateToProps(state, props) {
     return {
         loading: state.dataReducer.loading,
-        quotes: state.dataReducer.quotes
+        cards: state.dataReducer.cards
     }
 }
 
