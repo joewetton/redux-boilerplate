@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 
-import { CARDS_AVAILABLE, ADD_CARD, ADD_MESSAGE, UPDATE_CARD, DELETE_CARD, CLEAR_ALL, MESSAGES_AVAILABLE } from "../actions/" //Import the actions types constant we defined in our actions
+import { CARDS_AVAILABLE, ADD_CARD, ADD_MESSAGE, UPDATE_CARD, DELETE_CARD, DELETE_MESSAGE, CLEAR_ALL, MESSAGES_AVAILABLE } from "../actions/" //Import the actions types constant we defined in our actions
 
 let dataState = { cards: [], messages: [], loading:true };
 
@@ -48,6 +48,15 @@ const dataReducer = (state = dataState, action) => {
             let index = getIndex(cards, action.id); //find the index of the card with the id passed
             if(index !== -1) cards.splice(index, 1);//if yes, undo, remove the CARD
             state = Object.assign({}, state, { cards: cards});
+            return state;
+        }
+
+        case DELETE_MESSAGE:{
+            console.log('made it to delete message')
+            let messages =  cloneObject(state.messages) //clone the current state
+            let index = getIndex(messages, action.id); //find the index of the card with the id passed
+            if(index !== -1) messages.splice(index, 1);//if yes, undo, remove the CARD
+            state = Object.assign({}, state, { messages: messages});
             return state;
         }
 

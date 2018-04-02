@@ -6,6 +6,7 @@ export const CLEAR_ALL = 'CLEAR_ALL';
 
 export const MESSAGES_AVAILABLE = 'MESSAGES_AVAILABLE';
 export const ADD_MESSAGE = 'ADD_MESSAGE';
+export const DELETE_MESSAGE = 'DELETE_MESSAGE';
 
 import {AsyncStorage} from "react-native";
 
@@ -94,6 +95,24 @@ export function deleteCard(id){
                 AsyncStorage.setItem('carddata', JSON.stringify(cards), () => {
                     dispatch({type: DELETE_CARD, id:id});
                 });
+            }
+        });
+    };
+}
+
+// Delete Card - DELETE (D)
+export function deleteMessage(id){
+    return (dispatch) => {
+        AsyncStorage.getItem('messagedata', (err, messages) => {
+            if (messages !== null){
+                messages = JSON.parse(messages);
+
+                var index = getIndex(messages, id); //find the index of the card with the id passed
+                if(index !== -1) messages.splice(index, 1);//if yes, undo, remove the card
+                AsyncStorage.setItem('messagedata', JSON.stringify(messages), () => {
+                    dispatch({type: DELETE_MESSAGE, id:id});
+                });
+                console.log('in delete message')
             }
         });
     };

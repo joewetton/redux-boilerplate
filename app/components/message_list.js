@@ -16,13 +16,12 @@ import {Actions} from 'react-native-router-flux'
 
 //Buttons for Action Sheet
 const BUTTONS = [
-    "Edit",
     "Delete",
     "Clear",
     'Cancel',
 ];
 
-const CANCEL_INDEX = 3;
+const CANCEL_INDEX = 2;
 
 class MessageList extends Component {
     constructor(props) {
@@ -37,16 +36,15 @@ class MessageList extends Component {
         this.props.getMessages(); //call our action
     }
 
-    showOptions(card) {
+    showOptions(message) {
         ActionSheetIOS.showActionSheetWithOptions({
                 options: BUTTONS,
                 cancelButtonIndex: CANCEL_INDEX,
-                destructiveButtonIndex: 3,
+                destructiveButtonIndex: 2,
             },
             (buttonIndex) => {
-                if (buttonIndex === 0) Actions.new_card({card: card, edit: true, title:"Edit Card"})
-                else if (buttonIndex === 1) this.props.deleteCard(card.id)
-                else if (buttonIndex === 2) this.props.clearAll()
+                if (buttonIndex === 0) this.props.deleteMessage(message.id)
+                else if (buttonIndex === 1) this.props.clearAll()
             });
     }
 
@@ -57,25 +55,6 @@ class MessageList extends Component {
             return (
                 <View style={styles.activityIndicatorContainer}>
                     <ActivityIndicator animating={true}/>
-                </View>
-            );
-
-        } else if (this.props.mode == true) {
-                console.log('In Wallet Mode')
-            return (
-                <View style={styles.container}>
-                    <FlatList
-                        ref='listRef'
-                        data={this.props.cards}
-                        renderItem={this.renderItem}
-                        keyExtractor={(item, index) => index}/>
-
-
-                    <TouchableHighlight style={styles.addButton}
-                                        underlayColor='#ff7043' onPress={() => Actions.new_card()}>
-                        <Text style={{fontSize: 25, color: 'white'}}>+</Text>
-                    </TouchableHighlight>
-
                 </View>
             );
 
@@ -98,7 +77,7 @@ class MessageList extends Component {
     if (item.owner == this.props.mode){
       console.log('In Mode:', this.props.mode)
       return (
-          <TouchableHighlight onPress={() => Actions.view_card({item: item})} underlayColor='rgba(0,0,0,.2)'>
+          <TouchableHighlight onPress={() => this.showOptions(item)} underlayColor='rgba(0,0,0,.2)'>
               <View style={styles.row}>
                   <Text style={styles.quote}>
                       {item.to}
