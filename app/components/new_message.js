@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, Dimensions, Text, TextInput, TouchableOpacity} from 'react-native';
 
-
 import { addMessage } from '../actions'
 import { Actions } from 'react-native-router-flux';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
@@ -70,6 +69,7 @@ class NewMessage extends Component {
     }
 
     addMessage() {
+
             let id = this.generateID();
             let unix = this.generateTimestamp();
             //let keys_json = JSON.parse(keys);
@@ -161,7 +161,7 @@ class NewMessage extends Component {
         } else {
           return (
               <View style={{flex: 1, backgroundColor: '#fff'}}>
-                  <View style={{flex:1, paddingLeft:10, paddingRight:10}}>
+                  <View style={{flex:1, paddingLeft:5, paddingRight:5}}>
 
                     <Select onSelect={text => this.setState({ to: text })}>
                     {to}
