@@ -79,7 +79,7 @@ class Home extends Component {
                       </View>
                   </TouchableHighlight>
 
-                  <TouchableHighlight onPress={() => Actions.message_list()} underlayColor='rgba(0,0,0,.2)'>
+                  <TouchableHighlight onPress={() => Actions.inbox()} underlayColor='rgba(0,0,0,.2)'>
                       <View style={styles.row}>
                           <Text style={styles.author}>
                               Inbox
@@ -99,6 +99,14 @@ class Home extends Component {
                       <View style={styles.row}>
                           <Text style={styles.author}>
                               Scan
+                          </Text>
+                      </View>
+                  </TouchableHighlight>
+
+                  <TouchableHighlight onPress={() => Actions.message_list()} underlayColor='rgba(0,0,0,.2)'>
+                      <View style={styles.row}>
+                          <Text style={styles.author}>
+                            [developer] All Messages
                           </Text>
                       </View>
                   </TouchableHighlight>

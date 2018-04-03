@@ -11,6 +11,8 @@ import ViewCard from './components/view_card'
 import Scan from './components/scan'
 import NewMessage from './components/new_message'
 import MessageList from './components/message_list'
+import Inbox from './components/inbox'
+import MessageThread from './components/message_thread'
 
 import CardData from './cards.json'
 import MessageData from './messages.json'
@@ -59,6 +61,8 @@ class Main extends Component {
                     <Scene key="scan" component={Scan} title="Scan"/>
                     <Scene key="new_message" component={NewMessage} title="New Message"/>
                     <Scene key="message_list" component={MessageList} title="Message List"/>
+                    <Scene key="inbox" component={Inbox} title="Inbox"/>
+                    <Scene key="message_thread" component={MessageThread} title="Message Thread"/>
                 </Scene>
             </Router>
         );

@@ -100,14 +100,14 @@ class NewMessage extends Component {
       //  })}
       //console.log(arr)
 
-      const from = this.props.cards.filter(function(obj) {return obj.owner == false}).map(card => {
+      const from = this.props.cards.filter(function(obj) {return obj.owner == true}).map(card => {
         return (
           <Option value={card.keys.n}>{card.author}</Option>
         )
       })
       from.unshift(<Option value={0}>Sender</Option>)
 
-      const to = this.props.cards.filter(function(obj) {return obj.owner == true}).map(card => {
+      const to = this.props.cards.filter(function(obj) {return obj.owner == false}).map(card => {
         return (
           <Option value={card.keys.n}>{card.author}</Option>
         )
@@ -118,43 +118,83 @@ class NewMessage extends Component {
         console.log(this.props.cards)
         console.log('messages')
         console.log(this.props.messages)
-        return (
 
 
-            <View style={{flex: 1, backgroundColor: '#fff'}}>
-                <View style={{flex:1, paddingLeft:10, paddingRight:10}}>
+        if (this.props.reply) {
+          console.log('in reply mode', this.props.to, this.props.from)
+          this.state.from = this.props.from;
+          this.state.to = this.props.to;
+          return (
+          <View style={{flex: 1, backgroundColor: '#fff'}}>
+              <View style={{flex:1, paddingLeft:10, paddingRight:10}}>
+
+                <Text style={styles.keys}>
+                    To: {this.props.to}
+                </Text>
+
+              <Text style={styles.keys}>
+                  From: {this.props.from}
+              </Text>
 
 
-                  <Select onSelect={text => this.setState({ to: text })}>
-                  {to}
-                  </Select>
-
-                  <Select onSelect={text => this.setState({ from: text })}>
-                  {from}
-                  </Select>
-
-
-                    <TextInput
-                        multiline={true}
-                        onChangeText={(text) => this.setState({message: text})}
-                        placeholder={"Enter Message"}
-                        style={[styles.quote]}
-                        value={this.state.quote}
-                    />
-                </View>
-                <TouchableOpacity style={[styles.saveBtn]}
-                                  disabled={(this.state.to != 0 && this.state.from != 0 && this.state.message.length > 0) ? false : true}
-                                  onPress={this.addMessage}>
-                    <Text style={[styles.buttonText,
-                        {
-                            color: (this.state.to != 0 && this.state.from != 0 && this.state.message.length > 0) ? "#FFF" : "rgba(255,255,255,.5)"
-                        }]}>
-                        Send
-                    </Text>
-                </TouchableOpacity>
-                <KeyboardSpacer />
-            </View>
+                  <TextInput
+                      multiline={true}
+                      onChangeText={(text) => this.setState({message: text})}
+                      placeholder={"Enter Message"}
+                      style={[styles.quote]}
+                      value={this.state.quote}
+                  />
+              </View>
+              <TouchableOpacity style={[styles.saveBtn]}
+                                disabled={(this.state.to != 0 && this.state.from != 0 && this.state.message.length > 0) ? false : true}
+                                onPress={this.addMessage}>
+                  <Text style={[styles.buttonText,
+                      {
+                          color: (this.state.to != 0 && this.state.from != 0 && this.state.message.length > 0) ? "#FFF" : "rgba(255,255,255,.5)"
+                      }]}>
+                      Send
+                  </Text>
+              </TouchableOpacity>
+              <KeyboardSpacer />
+          </View>
         );
+        } else {
+          return (
+              <View style={{flex: 1, backgroundColor: '#fff'}}>
+                  <View style={{flex:1, paddingLeft:10, paddingRight:10}}>
+
+                    <Select onSelect={text => this.setState({ to: text })}>
+                    {to}
+                    </Select>
+
+                    <Select onSelect={text => this.setState({ from: text })}>
+                    {from}
+                    </Select>
+
+
+                      <TextInput
+                          multiline={true}
+                          onChangeText={(text) => this.setState({message: text})}
+                          placeholder={"Enter Message"}
+                          style={[styles.quote]}
+                          value={this.state.quote}
+                      />
+                  </View>
+                  <TouchableOpacity style={[styles.saveBtn]}
+                                    disabled={(this.state.to != 0 && this.state.from != 0 && this.state.message.length > 0) ? false : true}
+                                    onPress={this.addMessage}>
+                      <Text style={[styles.buttonText,
+                          {
+                              color: (this.state.to != 0 && this.state.from != 0 && this.state.message.length > 0) ? "#FFF" : "rgba(255,255,255,.5)"
+                          }]}>
+                          Send
+                      </Text>
+                  </TouchableOpacity>
+                  <KeyboardSpacer />
+              </View>
+          );
+        }
+
     }
 
 }
@@ -194,6 +234,12 @@ var styles = StyleSheet.create({
 
     buttonText:{
         fontWeight: "500",
+    },
+
+    keys: {
+        fontSize: 10,
+        fontWeight: "600",
+        marginTop: 8 * 2
     },
 
     quote: {
