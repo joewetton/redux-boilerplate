@@ -46,6 +46,7 @@ _handleBarCodeRead = result => {
   if (result.data !== this.state.lastScannedUrl) {
     LayoutAnimation.spring();
     this.setState({ lastScannedUrl: result.data });
+    console.log("publickey: ",result.data)
   }
 };
 
