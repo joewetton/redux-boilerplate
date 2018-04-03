@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import QRCode from 'react-native-qrcode';
 import {
     StyleSheet,
     FlatList,
     View,
     Text,
-    Dimensions,
-    ActivityIndicator, TouchableHighlight, ActionSheetIOS, TouchableOpacity
+    ActivityIndicator, TouchableHighlight, ActionSheetIOS
 } from 'react-native';
 
 import {bindActionCreators} from 'redux';
@@ -16,19 +14,16 @@ import * as ReduxActions from '../actions'; //Import your actions
 
 import {Actions} from 'react-native-router-flux'
 
-const {width: windowWidth, height: windowHeight} = Dimensions.get('window');
-
 //Buttons for Action Sheet
 const BUTTONS = [
-    "Edit",
     "Delete",
     "Clear",
     'Cancel',
 ];
 
-const CANCEL_INDEX = 3;
+const CANCEL_INDEX = 2;
 
-class ViewCard extends Component {
+class MessageList extends Component {
     constructor(props) {
         super(props);
 
@@ -38,19 +33,18 @@ class ViewCard extends Component {
     }
 
     componentDidMount() {
-        this.props.getCards(); //call our action
+        this.props.getMessages(); //call our action
     }
 
-    showOptions(card) {
+    showOptions(message) {
         ActionSheetIOS.showActionSheetWithOptions({
                 options: BUTTONS,
                 cancelButtonIndex: CANCEL_INDEX,
-                destructiveButtonIndex: 3,
+                destructiveButtonIndex: 2,
             },
             (buttonIndex) => {
-                if (buttonIndex === 0) Actions.new_card({card: card, edit: true, title:"Edit Card"})
-                else if (buttonIndex === 1) this.props.deleteCard(card.id)
-                else if (buttonIndex === 2) this.props.clearAll()
+                if (buttonIndex === 0) this.props.deleteMessage(message.id)
+                else if (buttonIndex === 1) this.props.clearAll()
             });
     }
 
@@ -64,32 +58,13 @@ class ViewCard extends Component {
                 </View>
             );
 
-        } else if (this.props.mode == true) {
-                console.log('In Wallet Mode')
-            return (
-                <View style={styles.container}>
-                    <FlatList
-                        ref='listRef'
-                        data={this.props.cards}
-                        renderItem={this.renderItem}
-                        keyExtractor={(item, index) => index}/>
-
-
-                    <TouchableHighlight style={styles.addButton}
-                                        underlayColor='#ff7043' onPress={() => Actions.new_card()}>
-                        <Text style={{fontSize: 25, color: 'white'}}>+</Text>
-                    </TouchableHighlight>
-
-                </View>
-            );
-
     } else {
       console.log('In Rolodex Mode')
           return (
                 <View style={styles.container}>
                     <FlatList
                         ref='listRef'
-                        data={this.props.cards}
+                        data={this.props.messages}
                         renderItem={this.renderItem}
                         keyExtractor={(item, index) => index}/>
                 </View>
@@ -98,83 +73,34 @@ class ViewCard extends Component {
   }
 
   renderItem({item, index}) {
-    console.log(item.id)
-    if (item.id == this.props.item.id){
-      console.log('Viewing ID:', this.props.id)
-
-      if (item.owner == true) {
-              console.log('Viewing your card (can edit)')
-        return (
-          <View style={{flex: 1, backgroundColor: '#fff'}}>
-              <TouchableHighlight onPress={() => this.showOptions(item)} underlayColor='rgba(0,0,0,.2)'>
-                <View style={{flex:1, paddingLeft:10, paddingRight:10}}>
-                    <Text style={styles.quote}>
-                        {item.quote}
-                    </Text>
-                    <Text style={styles.author}>
-                        {item.author}
-                    </Text>
-                    <Text style={styles.keys}>
-                        {item.keys.n}
-                    </Text>
-                    <Text style={styles.email}>
-                        {item.email}
-                    </Text>
-                    <Text style={styles.owner}>
-                        {item.owner.toString()}
-                    </Text>
-                </View>
-            </TouchableHighlight>
-
-
-            <TouchableOpacity style={styles.saveBtn}
-                              onPress={() => Actions.share({card: item})}>
-                <Text style={styles.buttonText}>
-                    Share QR
-                </Text>
-
-            </TouchableOpacity>
-            </View>
-        )
-    } else {
-                    console.log('Viewing someone elses card (cannot edit)')
+    console.log(item.owner)
+    if (item.owner == this.props.mode){
+      console.log('In Mode:', this.props.mode)
       return (
-        <View style={{flex: 1, backgroundColor: '#fff'}}>
-            <TouchableHighlight underlayColor='rgba(0,0,0,.2)'>
-              <View style={{flex: 1, backgroundColor: '#fff'}}>
+          <TouchableHighlight onPress={() => this.showOptions(item)} underlayColor='rgba(0,0,0,.2)'>
+              <View style={styles.row}>
                   <Text style={styles.quote}>
-                      {item.quote}
+                      {item.to}
                   </Text>
                   <Text style={styles.author}>
-                      {item.author}
+                      {item.from}
                   </Text>
                   <Text style={styles.keys}>
-                      {item.keys.n}
+                      {item.message}
                   </Text>
                   <Text style={styles.email}>
-                      {item.email}
+                      {item.time}
                   </Text>
                   <Text style={styles.owner}>
-                      {item.owner.toString()}
+                      {item.read.toString()}
                   </Text>
               </View>
           </TouchableHighlight>
-
-          <TouchableOpacity style={[styles.saveBtn]}
-                            onPress={() => Actions.share({card: item})}>
-              <Text style={styles.buttonText}>
-                  Share QR
-              </Text>
-          </TouchableOpacity>
-        </View>
       )
-    }
-
-
-
-
 }
   }
+
+
 };
 
 
@@ -185,7 +111,7 @@ class ViewCard extends Component {
 function mapStateToProps(state, props) {
     return {
         loading: state.dataReducer.loading,
-        cards: state.dataReducer.cards
+        messages: state.dataReducer.messages
     }
 }
 
@@ -197,25 +123,13 @@ function mapDispatchToProps(dispatch) {
 }
 
 //Connect everything
-export default connect(mapStateToProps, mapDispatchToProps)(ViewCard);
+export default connect(mapStateToProps, mapDispatchToProps)(MessageList);
 
 const styles = StyleSheet.create({
 
     container:{
         flex:1,
         backgroundColor: '#F5F5F5'
-    },
-
-    saveBtn:{
-        width: windowWidth,
-        height: 44,
-        justifyContent: "center",
-        alignItems: 'center',
-        backgroundColor:"#6B9EFA"
-    },
-
-    buttonText:{
-        fontWeight: "500",
     },
 
     activityIndicatorContainer:{

@@ -35,19 +35,19 @@ class Home extends Component {
     }
 
     componentDidMount() {
-        this.props.getQuotes(); //call our action
+        this.props.getCards(); //call our action
     }
 
-    showOptions(quote) {
+    showOptions(card) {
         ActionSheetIOS.showActionSheetWithOptions({
                 options: BUTTONS,
                 cancelButtonIndex: CANCEL_INDEX,
                 destructiveButtonIndex: 3,
             },
             (buttonIndex) => {
-                if (buttonIndex === 0) Actions.new_quote({quote: quote, edit: true, title:"Edit Quote"})
-                else if (buttonIndex === 1) this.props.deleteQuote(quote.id)
-                else if (buttonIndex === 2) this.props.clearQuote()
+                if (buttonIndex === 0) Actions.new_card({card: card, edit: true, title:"Edit Card"})
+                else if (buttonIndex === 1) this.props.deleteCard(card.id)
+                else if (buttonIndex === 2) this.props.clearAll()
             });
     }
 
@@ -79,7 +79,7 @@ class Home extends Component {
                       </View>
                   </TouchableHighlight>
 
-                  <TouchableHighlight onPress={() => Actions.card_list()} underlayColor='rgba(0,0,0,.2)'>
+                  <TouchableHighlight onPress={() => Actions.inbox()} underlayColor='rgba(0,0,0,.2)'>
                       <View style={styles.row}>
                           <Text style={styles.author}>
                               Inbox
@@ -87,10 +87,10 @@ class Home extends Component {
                       </View>
                   </TouchableHighlight>
 
-                  <TouchableHighlight onPress={() => Actions.card_list()} underlayColor='rgba(0,0,0,.2)'>
+                  <TouchableHighlight onPress={() => Actions.new_message()} underlayColor='rgba(0,0,0,.2)'>
                       <View style={styles.row}>
                           <Text style={styles.author}>
-                              About
+                              New Message
                           </Text>
                       </View>
                   </TouchableHighlight>
@@ -103,22 +103,13 @@ class Home extends Component {
                       </View>
                   </TouchableHighlight>
 
-                    <FlatList
-                        ref='listRef'
-                        data={this.props.quotes}
-                        renderItem={this.renderItem}
-                        keyExtractor={(item, index) => index}/>
-
-
-                    <TouchableHighlight style={styles.addButton}
-                                        underlayColor='#ff7043' onPress={() => Actions.new_quote()}>
-                        <Text style={{fontSize: 25, color: 'white'}}>Add</Text>
-                    </TouchableHighlight>
-
-                    <TouchableHighlight style={styles.listButton}
-                                        underlayColor='#ff7043' onPress={() => Actions.card_list()}>
-                        <Text style={{fontSize: 25, color: 'white'}}>List</Text>
-                    </TouchableHighlight>
+                  <TouchableHighlight onPress={() => Actions.message_list()} underlayColor='rgba(0,0,0,.2)'>
+                      <View style={styles.row}>
+                          <Text style={styles.author}>
+                            [developer] All Messages
+                          </Text>
+                      </View>
+                  </TouchableHighlight>
                 </View>
             );
         }
@@ -130,9 +121,6 @@ class Home extends Component {
                 <View style={styles.row}>
                     <Text style={styles.quote}>
                         {item.quote}
-                    </Text>
-                    <Text style={styles.author}>
-                        {item.author}
                     </Text>
                     <Text style={styles.keys}>
                         {item.keys.n}
@@ -154,7 +142,7 @@ class Home extends Component {
 function mapStateToProps(state, props) {
     return {
         loading: state.dataReducer.loading,
-        quotes: state.dataReducer.quotes
+        cards: state.dataReducer.cards
     }
 }
 

@@ -16,15 +16,14 @@ import {Actions} from 'react-native-router-flux'
 
 //Buttons for Action Sheet
 const BUTTONS = [
-    "Edit",
     "Delete",
     "Clear",
     'Cancel',
 ];
 
-const CANCEL_INDEX = 3;
+const CANCEL_INDEX = 2;
 
-class CardList extends Component {
+class Inbox extends Component {
     constructor(props) {
         super(props);
 
@@ -34,19 +33,18 @@ class CardList extends Component {
     }
 
     componentDidMount() {
-        this.props.getCards(); //call our action
+        this.props.getMessages(); //call our action
     }
 
-    showOptions(card) {
+    showOptions(message) {
         ActionSheetIOS.showActionSheetWithOptions({
                 options: BUTTONS,
                 cancelButtonIndex: CANCEL_INDEX,
-                destructiveButtonIndex: 3,
+                destructiveButtonIndex: 2,
             },
             (buttonIndex) => {
-                if (buttonIndex === 0) Actions.new_card({card: card, edit: true, title:"Edit Card"})
-                else if (buttonIndex === 1) this.props.deleteCard(card.id)
-                else if (buttonIndex === 2) this.props.clearAll()
+                if (buttonIndex === 0) this.props.deleteMessage(message.id)
+                else if (buttonIndex === 1) this.props.clearAll()
             });
     }
 
@@ -60,32 +58,46 @@ class CardList extends Component {
                 </View>
             );
 
-        } else if (this.props.mode == true) {
-                console.log('In Wallet Mode')
-            return (
-                <View style={styles.container}>
-                    <FlatList
-                        ref='listRef'
-                        data={this.props.cards}
-                        renderItem={this.renderItem}
-                        keyExtractor={(item, index) => index}/>
-
-
-                    <TouchableHighlight style={styles.addButton}
-                                        underlayColor='#ff7043' onPress={() => Actions.new_card()}>
-                        <Text style={{fontSize: 25, color: 'white'}}>+</Text>
-                    </TouchableHighlight>
-
-                </View>
-            );
-
     } else {
-      console.log('In Rolodex Mode')
+      console.log('In Inbox Mode')
+      var arr = [];
+      //arr.push({"to": "hi", "from": "hello"})
+      console.log('arr', arr[0])
+      //console.log( .size(this.props.messages.Data) );
+      for (var i = 0, len = this.props.messages.length; i < len; i++) {
+        console.log('iterating!', i)
+        console.log(this.props.messages[i].to)
+        // check array for to and from pair
+        var present = false;
+
+        for (var j = 0, len2 = arr.length; j < len2; j++ ) {
+          console.log('checking arr!', j, arr[j].to.toString())
+          console.log('trouble:',arr[j].to === this.props.messages[i].to)
+          if (arr[j].to === this.props.messages[i].to && arr[j].from === this.props.messages[i].from) {
+            present = true;
+          }
+          if (arr[j].to === this.props.messages[i].from && arr[j].from === this.props.messages[i].to) {
+            present = true;
+          }
+        }
+        // now add to array if combination not present
+        if (present == false) {
+          console.log('adding to array!', j)
+          arr.push({to: this.props.messages[i].to, from: this.props.messages[i].from})
+        }
+        else {
+          console.log('not adding because its already in list!', j)
+        }
+      }
+
+      console.log('pairs hopefully', arr)
+      //arr = [[]];
+      //console.log('cleared', arr)
           return (
                 <View style={styles.container}>
                     <FlatList
                         ref='listRef'
-                        data={this.props.cards}
+                        data={arr}
                         renderItem={this.renderItem}
                         keyExtractor={(item, index) => index}/>
                 </View>
@@ -98,22 +110,13 @@ class CardList extends Component {
     if (item.owner == this.props.mode){
       console.log('In Mode:', this.props.mode)
       return (
-          <TouchableHighlight onPress={() => Actions.view_card({item: item})} underlayColor='rgba(0,0,0,.2)'>
+          <TouchableHighlight onPress={() => Actions.message_thread({senderRecieverKeys: item})} underlayColor='rgba(0,0,0,.2)'>
               <View style={styles.row}>
                   <Text style={styles.quote}>
-                      {item.quote}
+                      {item.to}
                   </Text>
                   <Text style={styles.author}>
-                      {item.author}
-                  </Text>
-                  <Text style={styles.keys}>
-                      {item.keys.n}
-                  </Text>
-                  <Text style={styles.email}>
-                      {item.email}
-                  </Text>
-                  <Text style={styles.owner}>
-                      {item.owner.toString()}
+                      {item.from}
                   </Text>
               </View>
           </TouchableHighlight>
@@ -132,7 +135,7 @@ class CardList extends Component {
 function mapStateToProps(state, props) {
     return {
         loading: state.dataReducer.loading,
-        cards: state.dataReducer.cards
+        messages: state.dataReducer.messages
     }
 }
 
@@ -144,7 +147,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 //Connect everything
-export default connect(mapStateToProps, mapDispatchToProps)(CardList);
+export default connect(mapStateToProps, mapDispatchToProps)(Inbox);
 
 const styles = StyleSheet.create({
 

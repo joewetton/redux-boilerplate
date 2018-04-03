@@ -2,26 +2,26 @@ import React, {Component} from 'react';
 import {StyleSheet, View, Dimensions, Text, TextInput, TouchableOpacity} from 'react-native';
 
 import { connect } from 'react-redux';
-import { addQuote, updateQuote, clearQuote } from '../actions'
+import { addCard, updateCard, clearAll } from '../actions'
 import { Actions } from 'react-native-router-flux';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 //import {RSAKeychain, RSA} from 'react-native-rsa-native';
 
 const {width: windowWidth, height: windowHeight} = Dimensions.get('window');
 
-class NewQuote extends Component {
+class NewCard extends Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            author: (props.edit) ? props.quote.author : "",
-            quote: (props.edit) ? props.quote.quote : "",
-            email: (props.edit) ? props.quote.email : ""
+            author: (props.edit) ? props.card.author : "",
+            quote: (props.edit) ? props.card.quote : "",
+            email: (props.edit) ? props.card.email : ""
         };
 
         this.generateID = this.generateID.bind(this);
-        this.addQuote = this.addQuote.bind(this);
+        this.addCard = this.addCard.bind(this);
         this.generateKeys = this.generateKeys.bind(this)
     }
 
@@ -57,21 +57,21 @@ class NewQuote extends Component {
       return privateKey;
     }
 
-    addQuote() {
+    addCard() {
         if (this.props.edit){
-            let quote = this.props.quote;
-            quote['author'] = this.state.author;
-            quote['quote'] = this.state.quote;
-            quote['email'] = this.state.email;
-            this.props.updateQuote(quote);
+            let card = this.props.card;
+            card['author'] = this.state.author;
+            card['quote'] = this.state.quote;
+            card['email'] = this.state.email;
+            this.props.updateCard(card);
         }else{
             let id = this.generateID();
             let keys = this.generateKeys();
             let keys_json = JSON.parse(keys);
-            let quote = {"id": id, "keys": keys_json, "author": this.state.author, "quote": this.state.quote, "email": this.state.email, "owner": true};
-            console.log(quote.keys.n)
-            console.log(quote.keys)
-            this.props.addQuote(quote);
+            let card = {"id": id, "keys": keys_json, "author": this.state.author, "quote": this.state.quote, "email": this.state.email, "owner": true};
+            console.log(card.keys.n)
+            console.log(card.keys)
+            this.props.addCard(card);
         }
 
         Actions.pop();
@@ -105,7 +105,7 @@ class NewQuote extends Component {
                 </View>
                 <TouchableOpacity style={[styles.saveBtn]}
                                   disabled={(this.state.author.length > 0 && this.state.quote.length > 0 && this.state.email.length > 0) ? false : true}
-                                  onPress={this.addQuote}>
+                                  onPress={this.addCard}>
                     <Text style={[styles.buttonText,
                         {
                             color: (this.state.author.length > 0 && this.state.quote.length > 0 && this.state.email.length > 0) ? "#FFF" : "rgba(255,255,255,.5)"
@@ -121,7 +121,7 @@ class NewQuote extends Component {
 }
 
 //Connect everything
-export default connect(null, {addQuote, updateQuote})(NewQuote);
+export default connect(null, {addCard, updateCard})(NewCard);
 
 var styles = StyleSheet.create({
     saveBtn:{
