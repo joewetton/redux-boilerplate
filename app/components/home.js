@@ -110,7 +110,16 @@ class Home extends Component {
                           </Text>
                       </View>
                   </TouchableHighlight>
-                </View>
+
+
+                <TouchableHighlight onPress={() => Actions.lockbox({title:"Decrypt Message", mode: "decrypt"})} underlayColor='rgba(0,0,0,.2)'>
+                    <View style={styles.row}>
+                        <Text style={styles.author}>
+                          [developer] Decrypt Message
+                        </Text>
+                    </View>
+                </TouchableHighlight>
+              </View>
             );
         }
     }
