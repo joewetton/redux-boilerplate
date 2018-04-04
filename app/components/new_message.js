@@ -84,10 +84,9 @@ class NewMessage extends Component {
             console.log(message.from)
             console.log(message.message)
             console.log(message.time)
-
             this.props.addMessage(message);
 
-        Actions.pop();
+            Actions.lockbox({title:"Encrypt Message", mode: "encrypt", message: message});
     }
 
     render() {

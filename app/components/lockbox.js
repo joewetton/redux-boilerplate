@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, Dimensions, Text, TextInput, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Dimensions, Text, TextInput, TouchableOpacity, Linking} from 'react-native';
 
 import { connect } from 'react-redux';
 import {bindActionCreators} from 'redux';
@@ -22,7 +22,10 @@ class Lockbox extends Component {
             author: (props.edit) ? props.card.author : "",
             quote: (props.edit) ? props.card.quote : "",
             email: (props.edit) ? props.card.email : "",
-            publicKeyString: "",
+            publicKeyTo: "",
+            publicKeyFrom: "",
+            time: "",
+            id: "",
             cypherString: ""
         };
 
@@ -64,7 +67,7 @@ class Lockbox extends Component {
       return privateKey;
     }
     decryptMessage() {
-      console.log(this.state.publicKeyString)
+      console.log(this.state.publicKeyTo)
       console.log(this.state.cypherString)
       var RSAKey = require('react-native-rsa');
       var rsa = new RSAKey();
@@ -72,7 +75,7 @@ class Lockbox extends Component {
       var cardMatch = null;
       for (var i = 0, len = this.props.cards.length; i < len; i++) {
         console.log('iterating!', i)
-        if (this.props.cards[i].keys.n === this.state.publicKeyString) {
+        if (this.props.cards[i].keys.n === this.state.publicKeyTo) {
           cardMatch = this.props.cards[i];
           break;
         }
@@ -81,18 +84,91 @@ class Lockbox extends Component {
         console.log('card match key output:', cardMatch.keys)
         var jsond = JSON.stringify(cardMatch.keys)
         rsa.setPrivateString(jsond);
+        console.log('the cyperedtext string is:',this.state.cypherString)
+        console.log('the private key is:',jsond)
         var decrypted = rsa.decrypt(this.state.cypherString); // decrypted == originText
         console.log('the cyper says:',decrypted)
+        console.log('state:', this.state)
+
+        //packge for the transition to thread view and add to persistant storage
+        messageOb = [];
+        messageOb.to = this.state.publicKeyTo;
+        messageOb.from = this.state.publicKeyFrom;
+        messageOb.time = this.state.time;
+        messageOb.id = this.state.id;
+        messageOb.message = decrypted;
+        messageOb.read = true;
+
+        let messageOb = {"id": this.state.id, "to": this.state.publicKeyTo, "from": this.state.publicKeyFrom, "message": decrypted, "time": this.state.time, "read": false};
+
+        console.log('message object:', messageOb)
+
         // TODO: add to messages!
+        this.props.addMessage(messageOb);
+
+        Actions.pop();
+        Actions.home();
+        Actions.message_thread({senderRecieverKeys: messageOb});
       }
       else {
         console.log("couldnt find a matching public key users cards")
+        Actions.pop();
       }
+    }
+
+    encryptMessage2() {
       Actions.pop();
+      Actions.home();
+      //setTimeout(() => {Actions.pop()}, 100)
     }
 
     encryptMessage() {
-      Actions.pop();
+      var cardMatch = null;
+      for (var i = 0, len = this.props.cards.length; i < len; i++) {
+        console.log('iterating!', i)
+        if (this.props.cards[i].keys.n === this.props.message.to) {
+          cardMatch = this.props.cards[i];
+          break;
+        }
+      }
+      if (cardMatch) {
+        console.log('card match key output:', cardMatch.keys)
+        var email = cardMatch.email
+        var toKey = cardMatch.keys.n
+        var subject = "Id.ly - New Message"
+
+        var RSAKey = require('react-native-rsa');
+        var rsa = new RSAKey();
+
+        //json key object
+
+        var obj = new Object();
+        obj.n = toKey;
+        obj.e = "10001";
+        //"e":"10001"
+        var jsonString= JSON.stringify(obj);
+        console.log('public json:', jsonString)
+
+
+        this.generateKeys();
+        rsa.setPublicString(jsonString);
+
+
+        var encrypted = rsa.encrypt(this.props.message.message);
+      //mailto:mailto@deniseleeyohn.com?subject=abcdefg&body=body'
+        var uri = "mailto:" + email + "?" + "subject=" + subject + "&body=" + "PublicKey To: " + toKey + "\nPublicKey From: " + this.props.message.from + "\nTimestamp: " + this.props.message.time + "\nID: " + this.props.message.id +"\nCypher: " + encrypted
+        console.log('uri:', uri)
+        //encode for email url
+
+        var res = encodeURI(uri);
+
+        console.log('url:', res)
+
+        return res.toString();
+      }
+      else {
+        console.log("couldnt find a matching public key in users card rolodex")
+      }
     }
 
     addCard() {
@@ -118,35 +194,35 @@ class Lockbox extends Component {
     render() {
       if (this.props.mode === 'encrypt') {
               console.log('In encrypt Mode')
+              console.log(this.props.message)
+              var url = this.encryptMessage();
         return (
             <View style={{flex: 1, backgroundColor: '#fff'}}>
                 <View style={{flex:1, paddingLeft:10, paddingRight:10}}>
-                    <TextInput
-                        onChangeText={(text) => this.setState({author: text})}
-                        placeholder={"Public Key"}
-                        autoFocus={true}
-                        style={[styles.title]}
-                        value={this.state.author}
-                    />
-                    <TextInput
-                        multiline={true}
-                        onChangeText={(text) => this.setState({quote: text})}
-                        placeholder={"Enter Cypher String"}
-                        style={[styles.quote]}
-                        value={this.state.quote}
-                    />
+                  <Text>
+
+                  </Text>
+
                 </View>
                 <TouchableOpacity style={[styles.saveBtn]}
-                                  disabled={(this.state.author.length > 0 && this.state.quote.length > 0) ? false : true}
-                                  onPress={this.encryptMessage}>
+                                  onPress={() => Linking.openURL(url)}>
                     <Text style={[styles.buttonText,
                         {
-                            color: (this.state.author.length > 0 && this.state.quote.length > 0) ? "#FFF" : "rgba(255,255,255,.5)"
+                            color: "#FFF"
+                        }]}>
+                        Email
+                    </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={[styles.saveBtn]}
+                                  onPress={this.encryptMessage2}>
+                    <Text style={[styles.buttonText,
+                        {
+                            color: "#FFF"
                         }]}>
                         Done
                     </Text>
                 </TouchableOpacity>
-                <KeyboardSpacer />
             </View>
         );
       }
@@ -157,11 +233,32 @@ class Lockbox extends Component {
                           <View style={{flex: 1, backgroundColor: '#fff'}}>
                               <View style={{flex:1, paddingLeft:10, paddingRight:10}}>
                                   <TextInput
-                                      onChangeText={(text) => this.setState({publicKeyString: text})}
-                                      placeholder={"Public Key"}
+                                      onChangeText={(text) => this.setState({publicKeyTo: text})}
+                                      placeholder={"Public Key To"}
                                       autoFocus={true}
                                       style={[styles.title]}
-                                      value={this.state.publicKeyString}
+                                      value={this.state.publicKeyTo}
+                                  />
+                                  <TextInput
+                                      onChangeText={(text) => this.setState({publicKeyFrom: text})}
+                                      placeholder={"Public Key From"}
+                                      autoFocus={true}
+                                      style={[styles.title]}
+                                      value={this.state.publicKeyFrom}
+                                  />
+                                  <TextInput
+                                      onChangeText={(text) => this.setState({time: text})}
+                                      placeholder={"Time"}
+                                      autoFocus={true}
+                                      style={[styles.title]}
+                                      value={this.state.time}
+                                  />
+                                  <TextInput
+                                      onChangeText={(text) => this.setState({id: text})}
+                                      placeholder={"ID"}
+                                      autoFocus={true}
+                                      style={[styles.title]}
+                                      value={this.state.id}
                                   />
                                   <TextInput
                                       multiline={true}
@@ -172,11 +269,11 @@ class Lockbox extends Component {
                                   />
                               </View>
                               <TouchableOpacity style={[styles.saveBtn]}
-                                                disabled={(this.state.publicKeyString.length > 0 && this.state.cypherString.length > 0) ? false : true}
+                                                disabled={(this.state.publicKeyTo.length > 0 && this.state.publicKeyFrom.length > 0 && this.state.time.length > 0 && this.state.id.length > 0 && this.state.cypherString.length > 0) ? false : true}
                                                 onPress={this.decryptMessage}>
                                   <Text style={[styles.buttonText,
                                       {
-                                          color: (this.state.publicKeyString.length > 0 && this.state.cypherString.length > 0) ? "#FFF" : "rgba(255,255,255,.5)"
+                                          color: (this.state.publicKeyTo.length > 0 && this.state.publicKeyFrom.length > 0 && this.state.time.length > 0 && this.state.id.length > 0 && this.state.cypherString.length > 0) ? "#FFF" : "rgba(255,255,255,.5)"
                                       }]}>
                                       Decrypt
                                   </Text>
