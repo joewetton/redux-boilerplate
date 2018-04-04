@@ -22,13 +22,30 @@ class Share extends Component {
   constructor(props) {
       super(props);
     this.state = {};
+    this.packageCard = this.packageCard.bind(this);
+  }
+
+  packageCard() {
+    var jsonCard = JSON.stringify(this.props.card);
+    var jsonCard2 = JSON.parse(jsonCard);
+    console.log(jsonCard2)
+    var jsonKey = jsonCard2.keys.n;
+    console.log(jsonKey)
+    jsonCard2.keys = {};
+    jsonCard2.keys = {"n": jsonKey};
+    jsonCard2.owner = false;
+    console.log('object to display in QR',jsonCard2)
+    var res = JSON.stringify(jsonCard2);
+    return res;
   }
 
   render() {
+    var packageCard = this.packageCard();
+    console.log(packageCard)
     return (
       <View style={styles.container}>
         <QRCode
-          value={this.props.card.keys.n}
+          value={packageCard}
           size={350}
           bgColor='black'
           fgColor='white'/>

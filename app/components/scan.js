@@ -47,6 +47,10 @@ _handleBarCodeRead = result => {
     LayoutAnimation.spring();
     this.setState({ lastScannedUrl: result.data });
     console.log("publickey: ",result.data)
+    var jsand = JSON.parse(result.data);
+    this.props.addCard(jsand);
+
+    Actions.pop();
   }
 };
 

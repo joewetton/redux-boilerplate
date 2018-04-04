@@ -140,7 +140,7 @@ class ViewCard extends Component {
                     console.log('Viewing someone elses card (cannot edit)')
       return (
         <View style={{flex: 1, backgroundColor: '#fff'}}>
-            <TouchableHighlight underlayColor='rgba(0,0,0,.2)'>
+            <TouchableHighlight onPress={() => this.showOptions(item)} underlayColor='rgba(0,0,0,.2)'>
               <View style={{flex: 1, backgroundColor: '#fff'}}>
                   <Text style={styles.quote}>
                       {item.quote}
