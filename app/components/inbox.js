@@ -100,6 +100,12 @@ class Inbox extends Component {
                         data={arr}
                         renderItem={this.renderItem}
                         keyExtractor={(item, index) => index}/>
+
+                <TouchableHighlight style={styles.addButton}
+                                    underlayColor='#ff7043' onPress={() => Actions.new_message()}>
+                    <Text style={{fontSize: 25, color: 'white'}}>+</Text>
+                </TouchableHighlight>
+
                 </View>
           );
     }
@@ -120,6 +126,7 @@ class Inbox extends Component {
                   </Text>
               </View>
           </TouchableHighlight>
+
       )
 }
   }
