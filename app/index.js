@@ -13,6 +13,7 @@ import NewMessage from './components/new_message'
 import MessageList from './components/message_list'
 import Inbox from './components/inbox'
 import MessageThread from './components/message_thread'
+import Lockbox from './components/lockbox'
 
 import CardData from './cards.json'
 import MessageData from './messages.json'
@@ -63,6 +64,7 @@ class Main extends Component {
                     <Scene key="message_list" component={MessageList} title="Message List"/>
                     <Scene key="inbox" component={Inbox} title="Inbox"/>
                     <Scene key="message_thread" component={MessageThread} title="Message Thread"/>
+                    <Scene key="lockbox" component={Lockbox} title="Lockbox"/>
                 </Scene>
             </Router>
         );
