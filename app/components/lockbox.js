@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, Dimensions, Text, TextInput, TouchableOpacity, Linking} from 'react-native';
+import {StyleSheet, View, Dimensions, Text, TextInput, TouchableOpacity, Linking, Clipboard} from 'react-native';
 
 import { connect } from 'react-redux';
 import {bindActionCreators} from 'redux';
@@ -27,7 +27,8 @@ class Lockbox extends Component {
             publicKeyFrom: "",
             time: "",
             id: "",
-            cypherString: ""
+            cypherString: "",
+            jsonM: ""
         };
 
         this.generateID = this.generateID.bind(this);
@@ -145,7 +146,7 @@ class Lockbox extends Component {
         console.log('public json:', jsonString)
 
 
-        this.generateKeys();
+        //this.generateKeys();
         rsa.setPublicString(jsonString);
 
 
@@ -165,6 +166,8 @@ class Lockbox extends Component {
         jsonP.message = encrypted;
 
         var jsonM = JSON.stringify(jsonP);
+
+        this.state.jsonM = jsonM;
 
 
         //var res = encodeURI(jsonM);
@@ -205,17 +208,29 @@ class Lockbox extends Component {
         Actions.pop();
     }
 
+    writeToClipboard = async () => {
+      await Clipboard.setString(this.state.jsonM);
+      console.log("clipboard data",this.state.jsonM)
+      alert('Copied to Clipboard!');
+    };
+
     render() {
       if (this.props.mode === 'encrypt') {
               console.log('In encrypt Mode')
               console.log(this.props.message)
               var url = this.encryptMessage();
         return (
+
             <View style={{flex: 1, backgroundColor: '#fff'}}>
                 <View style={{flex:1, paddingLeft:10, paddingRight:10}}>
-                  <Text>
-
-                  </Text>
+                  <TextInput
+                      multiline={true}
+                      onChangeText={(text) => this.setState({email: text})}
+                      placeholder={this.state.jsonM}
+                      style={[styles.quote]}
+                      editable={false}
+                      value={this.state.jsonM}
+                  />
 
                 </View>
                 <TouchableOpacity style={[styles.saveBtn]}
@@ -225,6 +240,16 @@ class Lockbox extends Component {
                             color: "#FFF"
                         }]}>
                         Email
+                    </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={[styles.saveBtn]}
+                                  onPress={this.writeToClipboard}>
+                    <Text style={[styles.buttonText,
+                        {
+                            color: "#FFF"
+                        }]}>
+                        Copy to Clipboard
                     </Text>
                 </TouchableOpacity>
 
@@ -338,6 +363,20 @@ var styles = StyleSheet.create({
         height:25+32,
         padding: 16,
         paddingLeft:0
+    },
+
+    quote: {
+        fontSize: 12,
+        lineHeight: 12,
+        fontFamily: 'Helvetica Neue',
+        color: "#333333",
+        padding: 16,
+        paddingLeft:0,
+        flex:1,
+        height: 150,
+        marginBottom:50,
+        borderTopWidth: 1,
+        borderColor: "rgba(212,211,211, 0.3)",
     },
 
     email: {
