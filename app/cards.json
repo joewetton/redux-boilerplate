@@ -16,7 +16,7 @@
       "author": "Vivian Greene",
       "quote": "Life isn't about waiting for the storm to pass. It's about learning how to dance in the rain.",
       "email": "joe.wetton@gmail.com",
-      "owner": false
+      "owner": true
     },
     {
       "id":2,
@@ -34,7 +34,7 @@
       "author": "Maya Angelou",
       "quote": "Still, like air, I rise.",
       "email": "wetton@pdx.edu",
-      "owner": true
+      "owner": false
     },
     {
       "id":3,
