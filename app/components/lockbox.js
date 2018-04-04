@@ -23,6 +23,7 @@ class Lockbox extends Component {
             quote: (props.edit) ? props.card.quote : "",
             email: (props.edit) ? props.card.email : "",
             publicKeyTo: "",
+            jsonString: "",
             publicKeyFrom: "",
             time: "",
             id: "",
@@ -67,15 +68,16 @@ class Lockbox extends Component {
       return privateKey;
     }
     decryptMessage() {
-      console.log(this.state.publicKeyTo)
-      console.log(this.state.cypherString)
+      jsonStringP = JSON.parse(this.state.jsonString);
+      console.log(jsonStringP.to)
+      console.log(jsonStringP.message)
       var RSAKey = require('react-native-rsa');
       var rsa = new RSAKey();
 
       var cardMatch = null;
       for (var i = 0, len = this.props.cards.length; i < len; i++) {
         console.log('iterating!', i)
-        if (this.props.cards[i].keys.n === this.state.publicKeyTo) {
+        if (this.props.cards[i].keys.n === jsonStringP.to) {
           cardMatch = this.props.cards[i];
           break;
         }
@@ -84,32 +86,24 @@ class Lockbox extends Component {
         console.log('card match key output:', cardMatch.keys)
         var jsond = JSON.stringify(cardMatch.keys)
         rsa.setPrivateString(jsond);
-        console.log('the cyperedtext string is:',this.state.cypherString)
+        console.log('the cyperedtext string is:',jsonStringP.message)
         console.log('the private key is:',jsond)
-        var decrypted = rsa.decrypt(this.state.cypherString); // decrypted == originText
+        var decrypted = rsa.decrypt(jsonStringP.message); // decrypted == originText
         console.log('the cyper says:',decrypted)
         console.log('state:', this.state)
 
-        //packge for the transition to thread view and add to persistant storage
-        messageOb = [];
-        messageOb.to = this.state.publicKeyTo;
-        messageOb.from = this.state.publicKeyFrom;
-        messageOb.time = this.state.time;
-        messageOb.id = this.state.id;
-        messageOb.message = decrypted;
-        messageOb.read = true;
+        //replace json with decrypted text
+        jsonStringP.message = decrypted
 
-        let messageOb = {"id": this.state.id, "to": this.state.publicKeyTo, "from": this.state.publicKeyFrom, "message": decrypted, "time": this.state.time, "read": false};
-
-        console.log('message object:', messageOb)
+        console.log('message object:', jsonStringP)
 
         // TODO: add to messages!
-        this.props.addMessage(messageOb);
+        this.props.addMessage(jsonStringP);
 
         Actions.pop();
         Actions.home();
         Actions.inbox();
-        Actions.message_thread({senderRecieverKeys: messageOb});
+        Actions.message_thread({senderRecieverKeys: jsonStringP});
       }
       else {
         console.log("couldnt find a matching public key users cards")
@@ -157,14 +151,33 @@ class Lockbox extends Component {
 
         var encrypted = rsa.encrypt(this.props.message.message);
       //mailto:mailto@deniseleeyohn.com?subject=abcdefg&body=body'
-        var uri = "mailto:" + email + "?" + "subject=" + subject + "&body=" + "PublicKey To: " + toKey + "\nPublicKey From: " + this.props.message.from + "\nTimestamp: " + this.props.message.time + "\nID: " + this.props.message.id +"\nCypher: " + encrypted
-        console.log('uri:', uri)
+        //var uri = "mailto:" + email + "?" + "subject=" + subject + "&body=" + "PublicKey To: " + toKey + "\nPublicKey From: " + this.props.message.from + "\nTimestamp: " + this.props.message.time + "\nID: " + this.props.message.id +"\nCypher: " + encrypted
+        //console.log('uri:', uri)
         //encode for email url
 
-        var res = encodeURI(uri);
+        //var encryptedMessage = JSON.stringify(this.props.message);
+        //replace plain text with encrytted cypher
+
+        //convert to json
+        var jsonN= JSON.stringify(this.props.message);
+
+        var jsonP = JSON.parse(jsonN)
+        jsonP.message = encrypted;
+
+        var jsonM = JSON.stringify(jsonP);
+
+
+        //var res = encodeURI(jsonM);
+        console.log('messageobjJsond:', jsonM)
+
 
         console.log('url:', res)
+        //mailto:mailto@deniseleeyohn.com?subject=abcdefg&body=body'
+          var uri = "mailto:" + email + "?" + "subject=" + subject + "&body=" + jsonM
+          //encode for email linking
+            var res = encodeURI(uri);
 
+            //return it
         return res.toString();
       }
       else {
@@ -234,47 +247,19 @@ class Lockbox extends Component {
                           <View style={{flex: 1, backgroundColor: '#fff'}}>
                               <View style={{flex:1, paddingLeft:10, paddingRight:10}}>
                                   <TextInput
-                                      onChangeText={(text) => this.setState({publicKeyTo: text})}
-                                      placeholder={"Public Key To"}
-                                      autoFocus={true}
-                                      style={[styles.title]}
-                                      value={this.state.publicKeyTo}
-                                  />
-                                  <TextInput
-                                      onChangeText={(text) => this.setState({publicKeyFrom: text})}
-                                      placeholder={"Public Key From"}
-                                      autoFocus={true}
-                                      style={[styles.title]}
-                                      value={this.state.publicKeyFrom}
-                                  />
-                                  <TextInput
-                                      onChangeText={(text) => this.setState({time: text})}
-                                      placeholder={"Time"}
-                                      autoFocus={true}
-                                      style={[styles.title]}
-                                      value={this.state.time}
-                                  />
-                                  <TextInput
-                                      onChangeText={(text) => this.setState({id: text})}
-                                      placeholder={"ID"}
-                                      autoFocus={true}
-                                      style={[styles.title]}
-                                      value={this.state.id}
-                                  />
-                                  <TextInput
                                       multiline={true}
-                                      onChangeText={(text) => this.setState({cypherString: text})}
-                                      placeholder={"Enter Cypher String"}
+                                      onChangeText={(text) => this.setState({jsonString: text})}
+                                      placeholder={"Enter the Json from email"}
                                       style={[styles.quote]}
-                                      value={this.state.cypherString}
+                                      value={this.state.jsonString}
                                   />
                               </View>
                               <TouchableOpacity style={[styles.saveBtn]}
-                                                disabled={(this.state.publicKeyTo.length > 0 && this.state.publicKeyFrom.length > 0 && this.state.time.length > 0 && this.state.id.length > 0 && this.state.cypherString.length > 0) ? false : true}
+                                                disabled={(this.state.jsonString.length > 0) ? false : true}
                                                 onPress={this.decryptMessage}>
                                   <Text style={[styles.buttonText,
                                       {
-                                          color: (this.state.publicKeyTo.length > 0 && this.state.publicKeyFrom.length > 0 && this.state.time.length > 0 && this.state.id.length > 0 && this.state.cypherString.length > 0) ? "#FFF" : "rgba(255,255,255,.5)"
+                                          color: (this.state.jsonString.length > 0) ? "#FFF" : "rgba(255,255,255,.5)"
                                       }]}>
                                       Decrypt
                                   </Text>
