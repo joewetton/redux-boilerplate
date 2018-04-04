@@ -108,6 +108,7 @@ class Lockbox extends Component {
 
         Actions.pop();
         Actions.home();
+        Actions.inbox();
         Actions.message_thread({senderRecieverKeys: messageOb});
       }
       else {
@@ -117,9 +118,9 @@ class Lockbox extends Component {
     }
 
     encryptMessage2() {
+      //Actions.pop();
       Actions.pop();
-      Actions.home();
-      //setTimeout(() => {Actions.pop()}, 100)
+      setTimeout(() => {Actions.pop()}, 100)
     }
 
     encryptMessage() {
