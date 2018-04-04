@@ -51,6 +51,16 @@ class MessageThread extends Component {
             });
     }
 
+    getAuthor(publicKey) {
+      var author = publicKey;
+      for (var i = 0, len = this.props.cards.length; i < len; i++) {
+        if (this.props.cards[i].keys.n === publicKey) {
+          author = this.props.cards[i].author
+        }
+      }
+      return author;
+    }
+
     render() {
 
         if (this.props.loading) {
@@ -87,6 +97,8 @@ class MessageThread extends Component {
 
   renderItem({item, index}) {
     console.log(item.owner)
+    var toAuthor = this.getAuthor(this.props.senderRecieverKeys.to);
+    var fromAuthor = this.getAuthor(this.props.senderRecieverKeys.from);
     if ((item.to === this.props.senderRecieverKeys.to && item.from === this.props.senderRecieverKeys.from) || (item.to === this.props.senderRecieverKeys.from && item.from === this.props.senderRecieverKeys.to)) {
       return (
           <TouchableHighlight onPress={() => this.showOptions(item)} underlayColor='rgba(0,0,0,.2)'>
@@ -94,8 +106,14 @@ class MessageThread extends Component {
                   <Text style={styles.quote}>
                       {item.to}
                   </Text>
+                  <Text style={styles.quote}>
+                      {toAuthor}
+                  </Text>
                   <Text style={styles.author}>
                       {item.from}
+                  </Text>
+                  <Text style={styles.author}>
+                      {fromAuthor}
                   </Text>
                   <Text style={styles.keys}>
                       {item.message}
@@ -123,7 +141,8 @@ class MessageThread extends Component {
 function mapStateToProps(state, props) {
     return {
         loading: state.dataReducer.loading,
-        messages: state.dataReducer.messages
+        messages: state.dataReducer.messages,
+        cards: state.dataReducer.cards
     }
 }
 

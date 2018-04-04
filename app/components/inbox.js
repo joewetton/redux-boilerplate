@@ -48,6 +48,16 @@ class Inbox extends Component {
             });
     }
 
+    getAuthor(publicKey) {
+      var author = publicKey;
+      for (var i = 0, len = this.props.cards.length; i < len; i++) {
+        if (this.props.cards[i].keys.n === publicKey) {
+          author = this.props.cards[i].author
+        }
+      }
+      return author;
+    }
+
     render() {
 
         if (this.props.loading) {
@@ -115,14 +125,17 @@ class Inbox extends Component {
     console.log(item.owner)
     if (item.owner == this.props.mode){
       console.log('In Mode:', this.props.mode)
+      var toAuthor = this.getAuthor(item.to);
+      var fromAuthor = this.getAuthor(item.from);
+
       return (
           <TouchableHighlight onPress={() => Actions.message_thread({senderRecieverKeys: item})} underlayColor='rgba(0,0,0,.2)'>
               <View style={styles.row}>
                   <Text style={styles.quote}>
-                      {item.to}
+                      {toAuthor}
                   </Text>
                   <Text style={styles.author}>
-                      {item.from}
+                      {fromAuthor}
                   </Text>
               </View>
           </TouchableHighlight>
@@ -142,7 +155,8 @@ class Inbox extends Component {
 function mapStateToProps(state, props) {
     return {
         loading: state.dataReducer.loading,
-        messages: state.dataReducer.messages
+        messages: state.dataReducer.messages,
+        cards: state.dataReducer.cards
     }
 }
 
